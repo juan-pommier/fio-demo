@@ -20,6 +20,7 @@ WHITE='\033[1;37m'
 NC='\033[0m' # No Color
 
 # Function to watch a resource until it's ready or timeout
+# Function to watch a resource until it's ready or timeout
 watch_resource() {
     local resource_type="$1"
     local resource_name="$2"
@@ -27,16 +28,49 @@ watch_resource() {
     
     echo -e "${CYAN}Watching $resource_type/$resource_name...${NC}"
     
-    # Use timeout with kubectl get -w to watch the resource
-    timeout $timeout kubectl get $resource_type $resource_name -o wide -w 2>/dev/null &    local watch_pid=$!
+    local start_time=$(date +%s)
+    local end_time=$((start_time + timeout))
     
-    # Wait for the background process or timeout
-    wait $watch_pid 2>/dev/null
+    # Loop until resource is ready or timeout
+    while true; do
+        local current_time=$(date +%s)
+        
+        # Check if timeout reached
+        if [ $current_time -ge $end_time ]; then
+            echo -e "${YELLOW}Timeout reached${NC}"
+            break
+        fi
+        
+        # Display current status
+        clear
+        echo -e "${CYAN}Watching $resource_type/$resource_name... ($(($end_time - $current_time))s remaining)${NC}"
+        kubectl get $resource_type $resource_name -o wide 2>/dev/null
+        
+        # Check if resource is ready
+        if [ "$resource_type" = "pvc" ]; then
+            # For PVC, check if status is Bound
+            local status=$(kubectl get pvc $resource_name -o jsonpath='{.status.phase}' 2>/dev/null)
+            if [ "$status" = "Bound" ]; then
+                echo -e "${GREEN}✓ PVC is Bound!${NC}"
+                sleep 2
+                break
+            fi
+        elif [ "$resource_type" = "pod" ]; then
+            # For Pod, check if all containers are ready
+            local ready=$(kubectl get pod $resource_name -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)
+            if [ "$ready" = "True" ]; then
+                echo -e "${GREEN}✓ Pod is Ready!${NC}"
+                sleep 2
+                break
+            fi
+        fi
+        
+        # Wait 2 seconds before next check (like watch -n 2)
+        sleep 2
+    done
     
-    echo -e "${GREEN}✓ Resource check complete${NC}"
     echo
 }
-
 # Array of commands to demonstrate
 commands=(
 #Deploy the FIO App::
