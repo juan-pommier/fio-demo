@@ -28,8 +28,7 @@ watch_resource() {
     echo -e "${CYAN}Watching $resource_type/$resource_name...${NC}"
     
     # Use timeout with kubectl get -w to watch the resource
-    timeout $timeout kubectl get $resource_type $resource_name -w 2>/dev/null &
-    local watch_pid=$!
+    timeout $timeout kubectl get $resource_type $resource_name -o wide -w 2>/dev/null &    local watch_pid=$!
     
     # Wait for the background process or timeout
     wait $watch_pid 2>/dev/null
@@ -123,11 +122,10 @@ run_demo() {
     # Loop through each command
     for cmd in "${commands[@]}"; do
         
-        # Display the command with prompt
-        echo -e "${CYAN}$ ${cmd}${NC}"
-        
-        # Small delay for readability
-        sleep 0.5
+        # Display the command with prompt (skip echo commands)
+        if [[ ! "$cmd" =~ ^echo ]]; then
+            echo -e "${CYAN}$ ${cmd}${NC}"
+        fi        sleep 0.5
         
         # Execute the command
         eval "$cmd" 2>&1
