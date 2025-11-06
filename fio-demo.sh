@@ -28,8 +28,7 @@ watch_resource() {
     echo -e "${CYAN}Watching $resource_type/$resource_name...${NC}"
     
     # Use timeout with kubectl get -w to watch the resource
-    timeout $timeout kubectl get $resource_type $resource_name -w 2>/dev/null &
-    local watch_pid=$!
+    timeout $timeout kubectl get $resource_type $resource_name -o wide -w 2>/dev/null &    local watch_pid=$!
     
     # Wait for the background process or timeout
     wait $watch_pid 2>/dev/null
