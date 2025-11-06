@@ -16,7 +16,27 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 RED='\033[0;31m'
+WHITE='\033[1;37m'
 NC='\033[0m' # No Color
+
+# Function to watch a resource until it's ready or timeout
+watch_resource() {
+    local resource_type="$1"
+    local resource_name="$2"
+    local timeout="${3:-30}"
+    
+    echo -e "${CYAN}Watching $resource_type/$resource_name...${NC}"
+    
+    # Use timeout with kubectl get -w to watch the resource
+    timeout $timeout kubectl get $resource_type $resource_name -w 2>/dev/null &
+    local watch_pid=$!
+    
+    # Wait for the background process or timeout
+    wait $watch_pid 2>/dev/null
+    
+    echo -e "${GREEN}✓ Resource check complete${NC}"
+    echo
+}
 
 # Array of commands to demonstrate
 commands=(
@@ -24,7 +44,9 @@ commands=(
 "echo -e \"${BLUE}━━━ Deploying FIO Workload Pod ━━━${NC}\""
 "echo -e \"${BLUE}This will create a PVC and deploy a FIO pod that runs I/O benchmarks...${NC}\""
 "kubectl apply -f deployment/fio-pvc.yaml"
+"watch_resource pvc fio-pvc 30"
 "kubectl apply -f deployment/fio-deployment.yaml"
+"watch_resource pod fio-pod 60"
 
 #Wait for pod to be ready::
 "echo -e \"${BLUE}━━━ Waiting for FIO Pod to be Ready ━━━${NC}\""
@@ -56,7 +78,9 @@ commands=(
 "echo -e \"${BLUE}━━━ Deploying Clone from Snapshot ━━━${NC}\""
 "echo -e \"${BLUE}This creates a new PVC from the snapshot and deploys a clone pod...${NC}\""
 "kubectl apply -f clone/clone-pvc-from-snapshot.yaml"
+"watch_resource pvc fio-clone-pvc 30"
 "kubectl apply -f clone/fio-deployment-clone.yaml"
+"watch_resource pod fio-clone-pod 60"
 
 #Wait for clone pod::
 "echo -e \"${BLUE}━━━ Waiting for Clone Pod to be Ready ━━━${NC}\""
@@ -76,18 +100,18 @@ show_title() {
     clear
     echo -e "${RED} ********** ** ** ** ** ** **** **** ** ${NC}"
     echo -e "${RED}/////**/// // /** // /** /**/**/** **/** /** ${NC}"
-    echo -e "${RED}     /**     **  *******  ******  ******  **  /**  /**/**//**  **  /**  ******  ******  ******  ******  ***** ${NC}"
-    echo -e "${RED}     /**    /**//**///**///**/ //**//*/**  //** **  /**  //***  /**  **//// ///**/ **////**//**//*  **///**${NC}"
-    echo -e "${WHITE}     /**    /**  /**  /**  /**    /**  / /**  //** **  /**   //*  /**//***** /**    /**  /**  /**  / /*******${NC}"
-    echo -e "${WHITE}     /**    /**  /**  /**  /**    /**    /**  //**** /**    /   /** /////** /**    /**  /**  /**    /////// ${NC}"
-    echo -e "${WHITE}     /**    /**  *** /**  //**  //***    /**   //**  /**   /**  ****** //**  //****** //***  //******${NC}"
-    echo -e "${WHITE}     //     //  /// //    //   ///     //     //   //    //   //////  //    //////  ///    ////// ${NC}"
+    echo -e "${RED}     /**    **  *******  ******  ******  ** /**  /**/**//**  ** /**  ******  ******  ******  ******  ***** ${NC}"
+    echo -e "${RED}     /**   /**//**///**///**/ //**//*/** //** ** /**  //*** /**  **//// ///**/ **////**//**//* **///**${NC}"
+    echo -e "${WHITE}     /**   /**  /**  /**  /**   /**  / /** //** ** /**   //* /**//***** /**   /**  /**  /** / /*******${NC}"
+    echo -e "${WHITE}     /**   /**  /**  /**  /**   /**   /**  //**** /**    / /** /////** /**   /**  /**  /** /////// ${NC}"
+    echo -e "${WHITE}     /**   /**  *** /**  //**  //***  /**   //** /**      /**  ****** //** //****** //*** //******${NC}"
+    echo -e "${WHITE}     //    //  /// //    //   ///   //     //  //       //  //////  //  //////  ///  ////// ${NC}"
     echo
     echo -e "${RED}=====================================${NC}"
-    echo -e "${RED}         FIO Workload Demo           ${NC}"
+    echo -e "${RED}       FIO Workload Demo${NC}"
     echo -e "${RED}=====================================${NC}"
     echo
-    echo -e "${GREEN}Press ENTER after each command to execute${NC}"
+    echo -e "${GREEN}Running automatically with delays for readability${NC}"
     echo -e "${GREEN}Press Ctrl+C to exit the demo${NC}"
     echo
 }
@@ -102,25 +126,19 @@ run_demo() {
         # Display the command with prompt
         echo -e "${CYAN}$ ${cmd}${NC}"
         
-        # Wait for user to press ENTER
-        read -p ""
+        # Small delay for readability
+        sleep 0.5
         
-        # Execute the command with error handling
-        if ! eval "$cmd" 2>&1; then
-            echo -e "${RED}━━━ Command Error ━━━${NC}"
-            echo -e "${YELLOW}The command encountered an issue. Check the error above.${NC}"
-            read -p "Continue anyway? (y/n) " -n 1 -r
-            echo
-            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-                echo -e "${RED}Demo stopped by user.${NC}"
-                exit 1
-            fi
-        fi
+        # Execute the command
+        eval "$cmd" 2>&1
         
         # Separator for readability
         echo
         echo -e "${YELLOW}─────────────────────────────────────${NC}"
         echo
+        
+        # Small delay between commands
+        sleep 1
     done
     
     # Demo completed message
