@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tintri 2035 - Hyperdata Orchestration</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Orbitron', sans-serif; /* Futuristic font */
+            background: linear-gradient(135deg, #0d001f 0%, #1a0047 100%);
+            color: #e0e0ff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            perspective: 1000px; /* For 3D effects */
+        }
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: linear-gradient(to bottom, rgba(0, 48, 135, 0.8), transparent);
+            transform: translateZ(50px);
+            animation: pulse 4s infinite;
+        }
+        h1 {
+            font-size: 3.5em;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            background: -webkit-linear-gradient(#00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            z-index: 10;
+        }
+        nav a {
+            margin: 0 20px;
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+        nav a:hover {
+            color: #ff00ff;
+            transform: scale(1.2) rotate(5deg);
+            text-shadow: 0 0 15px #ff00ff;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            transform-style: preserve-3d;
+        }
+        .card {
+            background: rgba(20, 20, 60, 0.9);
+            border: 1px solid #00ffff;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            transition: transform 0.5s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        .card:hover {
+            transform: translateZ(30px) rotateX(10deg);
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.7);
+        }
+        h2, h3 {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        p, ul {
+            font-size: 1.1em;
+            color: #e0e0ff;
+        }
+        ul li {
+            list-style: none;
+            padding: 10px 0;
+            position: relative;
+        }
+        ul li:before {
+            content: '>>';
+            color: #ff00ff;
+            margin-right: 10px;
+            animation: blink 1.5s infinite;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid #ff00ff;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        /* Neon glow effect */
+        .glow {
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00ffff; }
+            to { text-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1 class="glow">Tintri 2035</h1>
+        <p>Hyperdata Orchestration for Galactic Enterprises</p>
+    </header>
+    <nav>
+        <a href="#home">Core</a>
+        <a href="#vmstore">VMstore X</a>
+        <a href="#workloads">Quantum Workloads</a>
+        <a href="#hypercloud">Hypercloud</a>
+        <a href="#contact">Interlink</a>
+    </nav>
+    <div class="content">
+        <div class="card">
+            <h2>Welcome to the Future</h2>
+            <p>Tintri pioneers workload-aware hyperdata orchestration, powering quantum VMs, neural-net containers, and galactic databases. Manage your enterprise’s data across planets with AI precision and zero latency.</p>
+        </div>
+        <div class="card">
+            <h3>VMstore X: The Quantum Edge</h3>
+            <p>Evolved from the T7000, VMstore X harnesses quantum relays for instantaneous workload management. Optimize your ecosystem with holographic analytics and self-healing data fabrics.</p>
+        </div>
+        <div class="card">
+            <h3>Quantum Workloads</h3>
+            <ul>
+                <li><strong>Quantum VMs</strong>: Subatomic precision for virtualized realities.</li>
+                <li><strong>Neural Containers</strong>: AI-driven pods for sentient workloads.</li>
+                <li><strong>Galactic Databases</strong>: Exabyte-scale data for interstellar ops.</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Hypercloud Relay</h3>
+            <p>Link Earth to Mars with Tintri’s Hypercloud Engine. Quantum-encrypted data streams and real-time replication across solar clusters keep your enterprise connected.</p>
+        </div>
+    </div>
+    <footer>
+        <p>© 2035 Tintri by DDN, Galactic Division. All rights reserved.</p>
+    </footer>
+</body>
+</html>

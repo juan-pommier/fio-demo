@@ -1,0 +1,29 @@
+# Deployment definition
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-storage
+          mountPath: /usr/share/nginx/html # Default Nginx HTML directory
+      volumes:
+      - name: nginx-storage
+        persistentVolumeClaim:
+          claimName: nginx-demo-pvc
+      nodeSelector:
+        topology.kubernetes.io/zone: obelix
