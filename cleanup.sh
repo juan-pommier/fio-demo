@@ -58,24 +58,12 @@ cleanup_commands=(
 run_cleanup() {
     show_title
     
-    echo -e "${YELLOW}⚠️  WARNING: This will delete all FIO demo resources!${NC}"
-    echo -e "${YELLOW}   - FIO pod and clone pod${NC}"
-    echo -e "${YELLOW}   - All PVCs (fio-pvc, fio-clone-pvc)${NC}"
-    echo -e "${YELLOW}   - Volume snapshots${NC}"
+    echo -e "${YELLOW}⚠️  Cleaning up FIO demo resources...${NC}"
     echo
-    echo -e "${CYAN}Current resources to be deleted:${NC}"
+    echo -e "${CYAN}Current resources:${NC}"
     kubectl get pods,pvc,volumesnapshot 2>/dev/null | grep -E 'fio|clone|snapshot' || echo -e "${GREEN}No resources found${NC}"
     echo
     
-    read -p "$(echo -e ${YELLOW}Are you sure you want to continue? \(y/N\): ${NC})" -n 1 -r
-    echo
-    
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${GREEN}Cleanup cancelled.${NC}"
-        exit 0
-    fi
-    
-    echo
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${RED}      Starting Cleanup Process        ${NC}"
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
