@@ -4,11 +4,11 @@
 
 NAMESPACE="${1:-default}"  # Default to 'default' if not passed as argument
 
-echo "🚨 WARNING: This will delete all pods, PVCs, and PVs in namespace: $NAMESPACE"
+echo "WARNING: This will delete all pods, PVCs, and PVs in namespace: $NAMESPACE"
 read -p "Are you sure? Type 'yes' to continue: " confirm
 
 if [[ "$confirm" != "yes" ]]; then
-  echo "❌ Cleanup aborted."
+  echo "Cleanup aborted."
   exit 1
 fi
 
@@ -21,4 +21,4 @@ kubectl delete pvc --all -n "$NAMESPACE"
 echo "Deleting PVs cluster-wide..."
 kubectl delete pv --all
 
-echo "✅ Cleanup complete!"
+echo "Cleanup complete!"
