@@ -125,7 +125,9 @@ run_demo() {
         # Display the command with prompt (skip echo commands)
         if [[ ! "$cmd" =~ ^echo ]]; then
             echo -e "${CYAN}$ ${cmd}${NC}"
-        fi        sleep 0.5
+        fi
+
+        sleep 0.5
         
         # Execute the command
         eval "$cmd" 2>&1
