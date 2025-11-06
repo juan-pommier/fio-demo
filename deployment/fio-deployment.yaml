@@ -11,7 +11,7 @@ spec:
     command: ["/bin/sh", "-c"]
     args:
       - |
-        while true; do
+
           echo "Running high IOPS workload..."
           fio --name=looprandrw \
               --filename=/data/testfile \
@@ -22,10 +22,8 @@ spec:
               --iodepth=64 \
               --numjobs=4 \
               --time_based \
-              --runtime=60 \
+              --runtime=1800 \
               --group_reporting;
-          sleep 5;
-        done
     volumeMounts:
     - mountPath: /data
       name: fio-volume
