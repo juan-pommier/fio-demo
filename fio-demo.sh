@@ -122,11 +122,10 @@ run_demo() {
     # Loop through each command
     for cmd in "${commands[@]}"; do
         
-        # Display the command with prompt
-        echo -e "${CYAN}$ ${cmd}${NC}"
-        
-        # Small delay for readability
-        sleep 0.5
+        # Display the command with prompt (skip echo commands)
+        if [[ ! "$cmd" =~ ^echo ]]; then
+            echo -e "${CYAN}$ ${cmd}${NC}"
+        fi        sleep 0.5
         
         # Execute the command
         eval "$cmd" 2>&1
