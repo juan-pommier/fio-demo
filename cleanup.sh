@@ -58,7 +58,7 @@ cleanup_commands=(
 run_cleanup() {
     show_title
     
-    echo -e "${YELLOW}⚠️  Cleaning up FIO demo resources...${NC}"
+    echo -e "${YELLOW}Cleaning up FIO demo resources...${NC}"
     echo
     echo -e "${CYAN}Current resources:${NC}"
     kubectl get pods,pvc,volumesnapshot 2>/dev/null | grep -E 'fio|clone|snapshot' || echo -e "${GREEN}No resources found${NC}"
