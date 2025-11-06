@@ -1,8 +1,8 @@
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshot
 metadata:
-  name: snapshot-nginx-demo-pvc
+  name: snapshot-fio-pvc
 spec:
   volumeSnapshotClassName: vmstore-snapshot
   source:
-    persistentVolumeClaimName: nginx-demo-pvc
+    persistentVolumeClaimName: fio-pvc
