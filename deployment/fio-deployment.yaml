@@ -18,7 +18,7 @@ spec:
               --bs=8k \
               --rw=randrw \
               --rwmixread=70 \
-              --iodepth=64 \
+              --iodepth=32 \
               --numjobs=1 \
               --time_based \
               --runtime=1800 \
