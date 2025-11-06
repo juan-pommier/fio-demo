@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nginx-clone-pvc
+  name: fio-clone-pvc
 spec:
   storageClassName: vmstore-csi-file-driver-sc
   dataSource:
-    name: snapshot-nginx-demo-pvc
+    name: snapshot-fio-pvc
     kind: VolumeSnapshot
     apiGroup: snapshot.storage.k8s.io
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 2Gi
+      storage: 25Gi
