@@ -1,5 +1,33 @@
 #!/bin/bash
 
+# Parse command line arguments
+DEBUG=false
+RUN_SNAPSHOT=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+            -d)
+                        DEBUG=true
+                                    shift
+                                                ;;
+                                                        -s|--snapshot)
+                                                                    RUN_SNAPSHOT=true
+                                                                                shift
+                                                                                            ;;
+                                                                                                    -h|--help)
+                                                                                                                echo "Usage: $0 [-d] [-s|--snapshot]"
+                                                                                                                            echo "  -d              Enable debug mode"
+                                                                                                                                        echo "  -s, --snapshot  Run snapshot and clone commands"
+                                                                                                                                                    exit 0
+                                                                                                                                                                ;;
+                                                                                                                                                                        *)
+                                                                                                                                                                                    echo "Unknown option: $1"
+                                                                                                                                                                                                echo "Use -h or --help for usage information"
+                                                                                                                                                                                                            exit 1
+                                                                                                                                                                                                                        ;;
+                                                                                                                                                                                                                            esac
+                                                                                                                                                                                                                            done
+
 # Debug mode toggle (set to true or false)
 DEBUG=false
 
@@ -92,6 +120,10 @@ commands=(
 #Monitor FIO output::
 "echo -e \"${BLUE}━━━ FIO Benchmark Output (first 20 lines) ━━━${NC}\""
 "kubectl logs fio-pod --tail=20 || echo -e \"${YELLOW}Pod logs not yet available...${NC}\""
+)
+
+# Snapshot commands (run only with -s or --snapshot flag)
+snapshot_commands=(
 
 #SnapShot The PVC::
 "echo -e \"${BLUE}━━━ Creating Volume Snapshot ━━━${NC}\""
@@ -153,14 +185,13 @@ show_title() {
 run_demo() {
     show_title
     
-    # Loop through each command
+        # Run base commands
     for cmd in "${commands[@]}"; do
         
         # Display the command with prompt (skip echo commands)
         if [[ ! "$cmd" =~ ^echo ]]; then
             echo -e "${CYAN}$ ${cmd}${NC}"
         fi
-
         sleep 0.5
         
         # Execute the command
@@ -173,6 +204,31 @@ run_demo() {
         
         # Small delay between commands
         sleep 1
+    done
+    
+    # Run snapshot commands if flag is set
+    if [ "$RUN_SNAPSHOT" = true ]; then
+        echo -e "${BLUE}━━━ Running Snapshot Commands ━━━${NC}"
+        for cmd in "${snapshot_commands[@]}"; do
+            
+            # Display the command with prompt (skip echo commands)
+            if [[ ! "$cmd" =~ ^echo ]]; then
+                echo -e "${CYAN}$ ${cmd}${NC}"
+            fi
+            sleep 0.5
+            
+            # Execute the command
+            eval "$cmd" 2>&1
+            
+            # Separator for readability
+            echo
+            echo -e "${YELLOW}─────────────────────────────────────${NC}"
+            echo
+            
+            # Small delay between commands
+            sleep 1
+        done
+    fi    sleep 1
     done
     
     # Demo completed message
