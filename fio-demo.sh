@@ -3,6 +3,7 @@
 # Parse command line arguments
 DEBUG=false
 RUN_SNAPSHOT=false
+RUN_CLONE=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -10,15 +11,21 @@ while [[ $# -gt 0 ]]; do
                         DEBUG=true
                                     shift
                                                 ;;
-                                                        -s|--snapshot)
+                                                                -s)
                                                                     RUN_SNAPSHOT=true
                                                                                 shift
                                                                                             ;;
+                                                                                                    -c)
+                                                                                                                RUN_SNAPSHOT=true
+                                                                                                                            RUN_CLONE=true
+                                                                                                                                        shift
+                                                                                                                                                    ;;
                                                                                                     -h|--help)
-                                                                                                                echo "Usage: $0 [-d] [-s|--snapshot]"
-                                                                                                                            echo "  -d              Enable debug mode"
-                                                                                                                                        echo "  -s, --snapshot  Run snapshot and clone commands"
-                                                                                                                                                    exit 0
+                                                                                                                echo "Usage: $0 [-d] [-s] [-c]"
+                                                                                                                echo "  -d              Enable debug mode"
+                                                                                                                            echo "  -s              Run snapshot commands"
+                                                                                                                                        echo "  -c              Run clone commands (includes snapshot)"
+                                                                                                                                                                                                                                                        exit 0
                                                                                                                                                                 ;;
                                                                                                                                                                         *)
                                                                                                                                                                                     echo "Unknown option: $1"
@@ -138,6 +145,10 @@ snapshot_commands=(
 #Check the snapshot::
 "echo -e \"${BLUE}━━━ Checking Snapshot Status ━━━${NC}\""
 "kubectl get volumesnapshot,volumesnapshotcontent -o wide"
+)
+
+# Clone commands (run with -c flag, includes snapshot)
+clone_commands=(
 
 #Deploy App with Clone Data::
 "echo -e \"${BLUE}━━━ Deploying Clone from Snapshot ━━━${NC}\""
@@ -207,6 +218,7 @@ run_demo() {
     done
     
     # Run snapshot commands if flag is set
+        # Run snapshot commands if flag is set
     if [ "$RUN_SNAPSHOT" = true ]; then
         echo -e "${BLUE}━━━ Running Snapshot Commands ━━━${NC}"
         for cmd in "${snapshot_commands[@]}"; do
@@ -228,8 +240,56 @@ run_demo() {
             # Small delay between commands
             sleep 1
         done
-    fi    sleep 1
-    done
+    fi
+    
+    # Run clone commands if flag is set (includes snapshot)
+    if [ "$RUN_CLONE" = true ]; then
+        # First run snapshot commands if not already run
+        if [ "$RUN_SNAPSHOT" != true ]; then
+            echo -e "${BLUE}━━━ Running Snapshot Commands (required for clone) ━━━${NC}"
+            for cmd in "${snapshot_commands[@]}"; do
+                
+                # Display the command with prompt (skip echo commands)
+                if [[ ! "$cmd" =~ ^echo ]]; then
+                    echo -e "${CYAN}$ ${cmd}${NC}"
+                fi
+                sleep 0.5
+                
+                # Execute the command
+                eval "$cmd" 2>&1
+                
+                # Separator for readability
+                echo
+                echo -e "${YELLOW}─────────────────────────────────────${NC}"
+                echo
+                
+                # Small delay between commands
+                sleep 1
+            done
+        fi
+        
+        # Now run clone commands
+        echo -e "${BLUE}━━━ Running Clone Commands ━━━${NC}"
+        for cmd in "${clone_commands[@]}"; do
+            
+            # Display the command with prompt (skip echo commands)
+            if [[ ! "$cmd" =~ ^echo ]]; then
+                echo -e "${CYAN}$ ${cmd}${NC}"
+            fi
+            sleep 0.5
+            
+            # Execute the command
+            eval "$cmd" 2>&1
+            
+            # Separator for readability
+            echo
+            echo -e "${YELLOW}─────────────────────────────────────${NC}"
+            echo
+            
+            # Small delay between commands
+            sleep 1
+        done
+    fidone
     
     # Demo completed message
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
