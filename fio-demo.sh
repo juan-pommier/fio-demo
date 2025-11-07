@@ -275,8 +275,7 @@ run_demo(){
             # Small delay between commands
             sleep 1
         done
-    fidone
-    
+ fi
     # Demo completed message
     echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${GREEN}       ✓ Demo completed successfully!${NC}"
