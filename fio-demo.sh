@@ -179,7 +179,7 @@ show_title() {
 }
 
 # Main demo function
-run_demo()
+run_demo(){
     show_title
     
         # Run base commands
@@ -286,7 +286,7 @@ run_demo()
     echo -e "  • View full FIO logs: ${CYAN}kubectl logs fio-pod${NC}"
     echo -e "  • View clone logs: ${CYAN}kubectl logs fio-clone-pod${NC}"
     echo -e "  • Check all resources: ${CYAN}kubectl get all,pvc,volumesnapshot${NC}"
-
+}
 
 # Run the demo
 run_demo
