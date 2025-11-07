@@ -4,7 +4,6 @@
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
@@ -29,28 +28,28 @@ show_title() {
 # Array of cleanup commands in reverse order (opposite of deployment)
 cleanup_commands=(
 #Delete Clone Resources::
-"echo -e \"${BLUE}━━━ Deleting Clone Pod ━━━${NC}\""
+"echo -e \"${CYAN}━━━ Deleting Clone Pod ━━━${NC}\""
 "kubectl delete -f clone/fio-deployment-clone.yaml --ignore-not-found"
 
-"echo -e \"${BLUE}━━━ Deleting Clone PVC ━━━${NC}\""
+"echo -e \"${CYAN}━━━ Deleting Clone PVC ━━━${NC}\""
 "kubectl delete -f clone/clone-pvc-from-snapshot.yaml --ignore-not-found"
 
 #Delete Snapshots::
-"echo -e \"${BLUE}━━━ Deleting Volume Snapshot ━━━${NC}\""
+"echo -e \"${CYAN}━━━ Deleting Volume Snapshot ━━━${NC}\""
 "kubectl delete -f snapshot/volumesnapshot.yaml --ignore-not-found"
 
-"echo -e \"${BLUE}━━━ Deleting Volume Snapshot Class ━━━${NC}\""
+"echo -e \"${CYAN}━━━ Deleting Volume Snapshot Class ━━━${NC}\""
 "kubectl delete -f snapshot/volumesnapshotclass.yaml --ignore-not-found"
 
 #Delete Original Deployment::
-"echo -e \"${BLUE}━━━ Deleting FIO Pod ━━━${NC}\""
+"echo -e \"${CYAN}━━━ Deleting FIO Pod ━━━${NC}\""
 "kubectl delete -f deployment/fio-deployment.yaml --ignore-not-found"
 
-"echo -e \"${BLUE}━━━ Deleting FIO PVC ━━━${NC}\""
+"echo -e \"${CYAN}━━━ Deleting FIO PVC ━━━${NC}\""
 "kubectl delete -f deployment/fio-pvc.yaml --ignore-not-found"
 
 #Final Check::
-"echo -e \"${BLUE}━━━ Verifying Cleanup ━━━${NC}\""
+"echo -e \"${CYAN}━━━ Verifying Cleanup ━━━${NC}\""
 "kubectl get pods,pvc,volumesnapshot 2>/dev/null | grep -E 'fio|clone|snapshot' || echo -e \"${GREEN}✓ All resources cleaned up successfully!${NC}\""
 )
 
