@@ -8,35 +8,32 @@ RUN_CLONE=false
 while [[ $# -gt 0 ]]; do
     case $1 in
             -d)
-                        DEBUG=true
-                                    shift
-                                                ;;
-                                                                -s)
-                                                                    RUN_SNAPSHOT=true
-                                                                                shift
-                                                                                            ;;
-                                                                                                    -c)
-                                                                                                                RUN_SNAPSHOT=true
-                                                                                                                            RUN_CLONE=true
-                                                                                                                                        shift
-                                                                                                                                                    ;;
-                                                                                                    -h|--help)
-                                                                                                                echo "Usage: $0 [-d] [-s] [-c]"
-                                                                                                                echo "  -d              Enable debug mode"
-                                                                                                                            echo "  -s              Run snapshot commands"
-                                                                                                                                        echo "  -c              Run clone commands (includes snapshot)"
-                                                                                                                                                                                                                                                        exit 0
-                                                                                                                                                                ;;
-                                                                                                                                                                        *)
-                                                                                                                                                                                    echo "Unknown option: $1"
-                                                                                                                                                                                                echo "Use -h or --help for usage information"
-                                                                                                                                                                                                            exit 1
-                                                                                                                                                                                                                        ;;
-                                                                                                                                                                                                                            esac
-                                                                                                                                                                                                                            done
-
-# Debug mode toggle (set to true or false)
-DEBUG=false
+              DEBUG=true
+              shift
+              ;;
+            -s)
+              RUN_SNAPSHOT=true
+              shift
+              ;;
+            -c)
+              RUN_SNAPSHOT=true
+              RUN_CLONE=true
+              shift
+              ;;
+            -h|--help)
+              echo "Usage: $0 [-d] [-s] [-c]"
+              echo "  -d              Enable debug mode"
+              echo "  -s              Run snapshot commands"
+              echo "  -c              Run clone commands (includes snapshot)"
+              exit 0
+              ;;
+            *)
+              echo "Unknown option: $1"
+              echo "Use -h or --help for usage information"
+              exit 1
+              ;;
+    esac
+done
 
 # Function to print debug messages
 debug_log() {
