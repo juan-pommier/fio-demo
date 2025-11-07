@@ -4,25 +4,37 @@ kind: Pod
 metadata:
   name: fio-pod
 spec:
+  nodeSelector:
+    allowed: "true"
   containers:
   - name: fio
     image: ljishen/fio
+    resources:
+      requests:
+        cpu: "2"
+        memory: "2Gi"
+      limits:
+        cpu: "4"
+        memory: "4Gi"
     command: ["/bin/sh", "-c"]
     args:
       - |
-        
-          echo "Running high IOPS workload..."
-          fio --name=looprandrw \
-              --filename=/data/testfile \
-              --size=1G \
-              --bs=8k \
-              --rw=randrw \
-              --rwmixread=70 \
-              --iodepth=32 \
-              --numjobs=1 \
-              --time_based \
-              --runtime=1800 \
-              --group_reporting;
+        while true; do
+          echo "Generating high-IOPS, low-latency workload (80% reads, 20% writes)...";
+          fio --name=highiops \
+            --filename=/data/testfile \
+            --size=512M \
+            --bs=4k \
+            --rw=randrw \
+            --rwmixread=80 \
+            --iodepth=8 \
+            --numjobs=4 \
+            --direct=1 \
+            --time_based \
+            --runtime=600 \
+            --group_reporting;
+          sleep 60;
+        done
     volumeMounts:
     - mountPath: /data
       name: fio-volume
