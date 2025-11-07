@@ -1,16 +1,12 @@
 #!/bin/bash
 
 # Parse command line arguments
-DEBUG=false
+
 RUN_SNAPSHOT=false
 RUN_CLONE=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-            -d)
-              DEBUG=true
-              shift
-              ;;
             -s)
               RUN_SNAPSHOT=true
               shift
@@ -21,8 +17,8 @@ while [[ $# -gt 0 ]]; do
               shift
               ;;
             -h|--help)
-              echo "Usage: $0 [-d] [-s] [-c]"
-              echo "  -d              Enable debug mode"
+                          echo "Usage: $0 [-s] [-c]"
+              
               echo "  -s              Run snapshot commands"
               echo "  -c              Run clone commands (includes snapshot)"
               exit 0
@@ -34,13 +30,6 @@ while [[ $# -gt 0 ]]; do
               ;;
     esac
 done
-
-# Function to print debug messages
-debug_log() {
-    if [ "$DEBUG" = true ]; then
-        echo "DEBUG: $1"
-    fi
-}
 
 # Colors for better readability
 CYAN='\033[0;36m'
