@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: fio-pod
+spec:
   containers:
   - name: fio
     image: ljishen/fio
