@@ -52,7 +52,7 @@ WHITE='\033[1;37m'
 NC='\033[0m' # No Color
 
 # Function to watch a resource until it's ready or timeout
-# Function to watch a resource until it's ready or timeout
+
 watch_resource() {
     local resource_type="$1"
     local resource_name="$2"
