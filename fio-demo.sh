@@ -2,6 +2,7 @@
 
 # Parse command line arguments
 
+RUN_PROFILE=false
 RUN_SNAPSHOT=false
 RUN_CLONE=false
 
@@ -16,8 +17,13 @@ while [[ $# -gt 0 ]]; do
               RUN_CLONE=true
               shift
               ;;
+                      -p)
+            RUN_PROFILE=true
+            shift
+            ;;
             -h|--help)
                           echo "Usage: $0 [-s] [-c]"
+                                          echo "       -p         Generate profile-based multi-instance deployment"
               
               echo "  -s              Run snapshot commands"
               echo "  -c              Run clone commands (includes snapshot)"
@@ -286,5 +292,120 @@ run_demo(){
     echo -e "  • Check all resources: ${CYAN}kubectl get all,pvc,volumesnapshot${NC}"
 }
 
+# Function to run profile-based deployment
+run_profile_deployment() {
+    echo -e "${CYAN}━━━ FIO Profile-Based Multi-Instance Deployment ━━━${NC}"
+    echo
+    
+    # User input for profile selection
+    echo "Select FIO profile:"
+    echo "1) 80/20 Read/Write"
+    echo "2) 90/10 Read/Write"
+    echo "3) 70/30 Read/Write"
+    echo "4) 10/90 Read/Write"
+    echo "5) 1/99 Read/Write"
+    read -p "Enter choice [1-5]: " profile_choice
+    
+    case $profile_choice in
+        1) PROFILE="8020"; RWMIX=80;;
+        2) PROFILE="9010"; RWMIX=90;;
+        3) PROFILE="7030"; RWMIX=70;;
+        4) PROFILE="1090"; RWMIX=10;;
+        5) PROFILE="199";  RWMIX=1;;
+        *) echo -e "${RED}Invalid choice${NC}"; exit 1;;
+    esac
+    
+    read -p "How many instances (pods)?: " INSTANCES
+    if ! [[ "$INSTANCES" =~ ^[0-9]+$ ]] || [ "$INSTANCES" -le 0 ]; then
+        echo -e "${RED}Invalid number of instances${NC}"
+        exit 1
+    fi
+    
+    STORAGECLASS="vmstore-csi-file-driver-sc"
+    PVC_SIZE="25Gi"
+    TS=$(date +%s)
+    BASE_NAME="fio-${PROFILE}-${TS}"
+    
+    OUTFILE="${BASE_NAME}-bundle.yaml"
+    > $OUTFILE
+    
+    echo -e "${CYAN}Generating YAML bundle...${NC}"
+    
+    for i in $(seq 1 $INSTANCES); do
+        PVC_NAME="${BASE_NAME}-pvc-${i}"
+        DEPLOY_NAME="${BASE_NAME}-deploy-${i}"
+        
+        cat <<EOF >> $OUTFILE
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${PVC_NAME}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: ${PVC_SIZE}
+  storageClassName: ${STORAGECLASS}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOY_NAME}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${DEPLOY_NAME}
+  template:
+    metadata:
+      labels:
+        app: ${DEPLOY_NAME}
+    spec:
+      containers:
+      - name: fio
+        image: ljishen/fio
+        command:
+          - /bin/sh
+          - -c
+          - |
+            set -e
+            fallocate -l 10G /data/testfile || dd if=/dev/zero of=/data/testfile bs=1M count=10240
+            fio --name=${PROFILE}demo-pvc-perf \\
+                --filename=/data/testfile \\
+                --bs=8k \\
+                --size=10G \\
+                --rw=randrw \\
+                --rwmixread=${RWMIX} \\
+                --iodepth=4 \\
+                --numjobs=1 \\
+                --direct=1 \\
+                --runtime=600 \\
+                --time_based \\
+                --group_reporting \\
+                --ioengine=libaio \\
+                --thread
+        volumeMounts:
+        - name: fio-pvc
+          mountPath: /data
+      volumes:
+      - name: fio-pvc
+        persistentVolumeClaim:
+          claimName: ${PVC_NAME}
+EOF
+    done
+    
+    echo
+    echo -e "${GREEN}✓ YAML bundle generated: $OUTFILE${NC}"
+    echo -e "${CYAN}To deploy, run: ${WHITE}kubectl apply -f $OUTFILE${NC}"
+    echo
+}
+
 # Run the demo
-run_demo
+# Choose which mode to run
+if [ "$RUN_PROFILE" = true ]; then
+    run_profile_deployment
+else
+    run_demo
+fi
