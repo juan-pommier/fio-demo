@@ -1,10 +1,8 @@
-fio-demo – Dev Notes
-====================
+# fio-demo – Dev Notes
 
 This file tracks planned improvements and a history of changes for collaboration.
 
-To-do
------
+## To-do
 
 - Clarify CLI flags and help text for -c / -s behavior in fio-demo.sh.
 - Add safety options (`set -euo pipefail`, kubectl presence/context checks) to all scripts.
@@ -16,17 +14,16 @@ To-do
 - Parameterize resource names to support multiple concurrent runs.
 - Make force-clean.sh safer (no default namespace, stronger confirmation, avoid cluster-wide PV deletes).
 
-Working on
-----------
+## Done
 
 - Reduce duplication of colors/banners by moving common pieces to a shared script.
-  - Step 1: Create common.sh with shared colors and banner.
-  - Step 2: Update fio-demo.sh to source common.sh.
-  - Step 3: Update cleanup.sh to source common.sh.
-  - Step 4: Update force-clean.sh to use common colors and banner.
+  - Step 1: Created common.sh with shared colors and banner.
+  - Step 2: Updated fio-demo.sh to source common.sh and removed local colors/banner.
+  - Step 3: Updated cleanup.sh to source common.sh and removed local colors/banner.
+  - Step 4: Updated force-clean.sh to source common.sh and added colors/banner usage.
 
-Done / History
---------------
+## History
 
 - 2026-03-06: Initial review of fio-demo scripts and creation of this dev notes file as a shared baseline.
 - 2026-03-06: Added common.sh with shared color definitions and banner (Step 1 for deduplicating colors/banners).
+- 2026-03-06: Completed all 4 steps for reducing duplication: created common.sh and updated all three scripts (fio-demo.sh, cleanup.sh, force-clean.sh) to source and use shared colors/banner.
