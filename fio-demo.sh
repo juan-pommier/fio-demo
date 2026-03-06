@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Parse command line arguments
 
@@ -8,6 +9,18 @@ RUN_CLONE=false
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}/common.sh"
+
+# Check kubectl presence
+if ! command -v kubectl &> /dev/null; then
+    echo_error "kubectl is not installed. Please install kubectl."
+    exit 1
+fi
+
+# Check kubectl context
+if ! kubectl cluster-info &> /dev/null; then
+    echo_error "kubectl cannot connect to cluster. Please configure kubeconfig."
+    exit 1
+fi
 
 while [[ $# -gt 0 ]]; do
     case $1 in
