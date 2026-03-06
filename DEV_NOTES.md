@@ -23,3 +23,4 @@ Files in this project:
 - 2026-03-06: Added common.sh with shared color definitions and banner (Step 1 for deduplicating colors/banners).
 - 2026-03-06: Completed all 4 steps for reducing duplication: created common.sh and updated all three scripts (fio-demo.sh, cleanup.sh, force-clean.sh) to source and use shared colors/banner.
 - 2026-03-06: Clarified CLI flags -s and -c: improved help text with detailed OPTIONS and EXAMPLES sections explaining phase counts and workflows.
+- - **2026-03-06 (Continued)**: Created WORKFLOW.md with comprehensive development standards, safety requirements, and workflow documentation. Reorganized task tracking - moved UX/logging task to Completed, reorganized error handling task back to Pending. Established clear standards for script modifications, error handling patterns (set -euo pipefail, kubectl checks), and commit message guidelines for future development work.
