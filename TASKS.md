@@ -9,7 +9,6 @@ This file tracks the current tasks and their status for the fio-demo project.
 - [ ] Replace fixed sleep for snapshot readiness with a readiness check or kubectl wait.
 
 - [ ] Externalize or clean up long YAML here-docs for better readability.
-- [ ] Improve UX/logging (clear step titles, success/failure messages per phase).
 - [ ] Parameterize resource names to support multiple concurrent runs.
 - [ ] Make force-clean.sh safer (no default namespace, stronger confirmation, avoid cluster-wide PV deletes).
 
@@ -18,6 +17,14 @@ This file tracks the current tasks and their status for the fio-demo project.
 - [x] Add safety options (set -euo pipefail, kubectl presence/context checks) to all scripts.
    - Added set -euo pipefail to all shell scripts
    - Added kubectl presence and context checks to all scripts
+   - - [x] Improve UX/logging (clear step titles, success/failure messages per phase).
+     - [ ]   - echo_header, echo_info, echo_warning functions provide consistent messaging
+     - [ ]     - All major phases have clear step titles and status messages
+    
+     - [ ] ## Working Tasks
+     - [ ] - [x] Improve error handling and exit on failure in watch_resource and other kubectl calls.
+     - [ ]   - Enhance watch_resource function with better error handling
+     - [ ]     - Add kubectl error validation to kubectl calls
 
 - [x] Simplify command arrays (avoid eval strings, favor direct functions/loops) in fio-demo.sh.
   - Step 1: Create helper functions (echo_header, echo_info, echo_warning, print_separator). (DONE - see REFACTORING_HELPERS.sh)
