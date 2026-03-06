@@ -1,29 +1,8 @@
 #!/bin/bash
 
-# Colors for better readability
-CYAN='\033[0;36m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
-
-# Function to display title
-show_title() {
-    clear
-    echo -e "${RED} ********** ** ** ** ** ** **** **** ** ${NC}"
-    echo -e "${RED}/////**/// // /** // /** /**/**/** **/** /** ${NC}"
-    echo -e "${RED}     /**    **  *******  ******  ******  ** /**  /**/**//**  ** /**  ******  ******  ******  ******  ***** ${NC}"
-    echo -e "${RED}     /**   /**//**///**///**/ //**//*/** //** ** /**  //*** /**  **//// ///**/ **////**//**//* **///**${NC}"
-    echo -e "${WHITE}     /**   /**  /**  /**  /**   /**  / /** //** ** /**   //* /**//***** /**   /**  /**  /** / /*******${NC}"
-    echo -e "${WHITE}     /**   /**  /**  /**  /**   /**   /**  //**** /**    / /** /////** /**   /**  /**  /** /////// ${NC}"
-    echo -e "${WHITE}     /**   /**  *** /**  //**  //***  /**   //** /**      /**  ****** //** //****** //*** //******${NC}"
-    echo -e "${WHITE}     //    //  /// //    //   ///   //     //  //       //  //////  //  //////  ///  ////// ${NC}"
-    echo
-    echo -e "${RED}=====================================${NC}"
-    echo -e "${RED}        FIO Demo Cleanup Tool        ${NC}"
-    echo -e "${RED}=====================================${NC}"
-    echo
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
+. "${SCRIPT_DIR}/common.sh"
 
 # Array of cleanup commands in reverse order (opposite of deployment)
 cleanup_commands=(
