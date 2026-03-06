@@ -12,6 +12,7 @@ This file tracks the current tasks and their status for the fio-demo project.
 - [ ] Parameterize resource names to support multiple concurrent runs.
 - [ ] Make force-clean.sh safer (no default namespace, stronger confirmation, avoid cluster-wide PV deletes).
 
+- [ ] Improve error handling and exit on failure in watch_resource and other kubectl calls.
 
 ## Completed Tasks
 - [x] Add safety options (set -euo pipefail, kubectl presence/context checks) to all scripts.
@@ -21,11 +22,6 @@ This file tracks the current tasks and their status for the fio-demo project.
      - [ ]   - echo_header, echo_info, echo_warning functions provide consistent messaging
      - [ ]     - All major phases have clear step titles and status messages
     
-     - [ ] ## Working Tasks
-     - [ ] - [x] Improve error handling and exit on failure in watch_resource and other kubectl calls.
-     - [ ]   - Enhance watch_resource function with better error handling
-     - [ ]     - Add kubectl error validation to kubectl calls
-
 - [x] Simplify command arrays (avoid eval strings, favor direct functions/loops) in fio-demo.sh.
   - Step 1: Create helper functions (echo_header, echo_info, echo_warning, print_separator). (DONE - see REFACTORING_HELPERS.sh)
   - Step 2: Refactor base demo commands into focused functions (deploy_fio_pod, wait_fio_pod, check_fio_status, show_fio_logs). (DONE)
