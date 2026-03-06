@@ -15,7 +15,13 @@ This file tracks planned improvements and a history of changes for collaboration
 
 ## Working on
 
-- Nothing
+- Simplify command arrays (avoid eval strings, favor direct functions/loops) in fio-demo.sh.
+  - Step 1: Create helper functions (echo_header, echo_info, echo_warning, print_separator).
+  - Step 2: Refactor base demo commands into focused functions (deploy_fio_pod, wait_for_fio_pod, check_fio_status, show_fio_logs).
+  - Step 3: Refactor snapshot commands into functions (create_snapshot, check_snapshot).
+  - Step 4: Refactor clone commands into functions (deploy_clone_pod, check_clone_status).
+  - Step 5: Update run_demo() to call functions directly instead of eval loops.
+  - Step 6: Remove old command arrays (commands, snapshot_commands, clone_commands).
 
 ## Done
 
