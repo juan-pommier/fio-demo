@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Shared colors
 CYAN='\033[0;36m'
