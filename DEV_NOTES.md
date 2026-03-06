@@ -4,15 +4,6 @@ This file tracks planned improvements and a history of changes for collaboration
 
 ## To-do
 
-
-## Working on
-
-- Clarify CLI flags and help text for -c / -s behavior in fio-demo.sh.
-  - Step 1: Update help text with detailed OPTIONS section (DONE).
-  - Step 2: Add EXAMPLES section showing flag combinations and workflows (DONE).
-  - Note: Conservative approach (Option A) - improved help text without changing existing logic.
- 
-  - 
 - Add safety options (`set -euo pipefail`, kubectl presence/context checks) to all scripts.
 - Improve error handling and exit on failure in watch_resource and other kubectl calls.
 - Replace fixed sleep for snapshot readiness with a readiness check or kubectl wait.
@@ -21,6 +12,13 @@ This file tracks planned improvements and a history of changes for collaboration
 - Improve UX/logging (clear step titles, success/failure messages per phase).
 - Parameterize resource names to support multiple concurrent runs.
 - Make force-clean.sh safer (no default namespace, stronger confirmation, avoid cluster-wide PV deletes).
+
+## Working on
+
+- Clarify CLI flags and help text for -c / -s behavior in fio-demo.sh.
+  - Step 1: Update help text with detailed OPTIONS section (DONE).
+  - Step 2: Add EXAMPLES section showing flag combinations and workflows (DONE).
+  - Note: Conservative approach (Option A) - improved help text without changing existing logic.
 
 ## Done
 
