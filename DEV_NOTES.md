@@ -22,6 +22,11 @@ This file tracks planned improvements and a history of changes for collaboration
 
 ## Done
 
+- Clarify CLI flags and help text for -c / -s behavior in fio-demo.sh.
+  - Step 1: Update help text with detailed OPTIONS section (DONE).
+  - Step 2: Add EXAMPLES section showing flag combinations and workflows (DONE).
+  - Note: Conservative approach (Option A) - improved help text without changing existing logic.
+
 - Reduce duplication of colors/banners by moving common pieces to a shared script.
   - Step 1: Created common.sh with shared colors and banner.
   - Step 2: Updated fio-demo.sh to source common.sh and removed local colors/banner.
