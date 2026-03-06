@@ -25,13 +25,19 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
             -h|--help)
-                          echo "Usage: $0 [-s] [-c]"
-                                          echo "       -p         Generate profile-based multi-instance deployment"
-              
-              echo "  -s              Run snapshot commands"
-              echo "  -c              Run clone commands (includes snapshot)"
-              exit 0
-              ;;
+              echo "Usage: $0 [OPTIONS]"
+            echo ""
+            echo "OPTIONS:"
+            echo "  -s, --snapshot    Run base demo + create snapshot (2 phases)"
+            echo "  -c, --clone       Run base demo + snapshot + clone from snapshot (3 phases)"
+            echo "  -p, --profile     Generate profile-based multi-instance YAML bundle"
+            echo ""
+            echo "EXAMPLES:"
+            echo "  $0              # Run base demo only"
+            echo "  $0 -s           # Run: base demo → snapshot"
+            echo "  $0 -c           # Run: base demo → snapshot → clone"
+            
+            ;;
             *)
               echo "Unknown option: $1"
               echo "Use -h or --help for usage information"
