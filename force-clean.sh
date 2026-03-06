@@ -1,8 +1,15 @@
 #!/bin/bash
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}/common.sh"
+
+# Check kubectl
+if ! command -v kubectl &> /dev/null; then
+    echo_error "kubectl is not installed."
+    exit 1
+fi
 
 # Forcefully clean all pods, PVCs, and PVs in the current namespace or all namespaces
 
