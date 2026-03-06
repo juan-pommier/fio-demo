@@ -1,3 +1,7 @@
+# fio-demo – Dev Notes
+
+This file tracks planned improvements and a history of changes for collaboration.
+
 ## To-do
 
 - Clarify CLI flags and help text for -c / -s behavior in fio-demo.sh.
