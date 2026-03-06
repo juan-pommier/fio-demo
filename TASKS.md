@@ -4,7 +4,11 @@ This file tracks the current tasks and their status for the fio-demo project.
 
 ## Pending Tasks (To-Do)
 
-- [ ] Add safety options ( set -euo pipefail , kubectl presence/context checks) to all scripts.
+## Working Tasks
+- [x] Add safety options (set -euo pipefail, kubectl presence/context checks) to all scripts.
+- [ ]   - Adding set -euo pipefail to all shell scripts
+- [ ]     - Adding kubectl presence and context checks to all scripts
+
 - [ ] Improve error handling and exit on failure in watch_resource and other kubectl calls.
 - [ ] Replace fixed sleep for snapshot readiness with a readiness check or kubectl wait.
 
