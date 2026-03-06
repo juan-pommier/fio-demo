@@ -98,179 +98,123 @@ watch_resource() {
     
     echo
 }
-# Array of commands to demonstrate
-commands=(
-#Deploy the FIO App::
-"echo -e \"${CYAN}━━━ Deploying FIO Workload Pod ━━━${NC}\""
-"echo -e \"${CYAN}This will create a PVC and deploy a FIO pod that runs I/O benchmarks...${NC}\""
-"kubectl apply -f deployment/fio-pvc.yaml"
-"watch_resource pvc fio-pvc 30"
-"kubectl apply -f deployment/fio-deployment.yaml"
-"watch_resource pod fio-pod 60"
+# Deploy FIO pod and PVC
+deploy_fio_pod() {
+    echo_header "Deploying FIO Workload Pod"
+    echo_info "This will create a PVC and deploy a FIO pod that runs I/O benchmarks..."
 
-#Wait for pod to be ready::
-"echo -e \"${CYAN}━━━ Waiting for FIO Pod to be Ready ━━━${NC}\""
-"kubectl wait --for=condition=ready pod/fio-pod --timeout=300s || echo -e \"${YELLOW}Warning: Pod may still be starting...${NC}\""
+    kubectl apply -f deployment/fio-pvc.yaml || return 1
+    watch_resource pvc fio-pvc 30 || return 1
 
-#Check the FIO pod status::
-"echo -e \"${CYAN}━━━ Checking FIO Pod Status ━━━${NC}\""
-"kubectl get pods,pvc -o wide"
+    kubectl apply -f deployment/fio-deployment.yaml || return 1
+    watch_resource pod fio-pod 60 || return 1
+}
 
-#Monitor FIO output::
-"echo -e \"${CYAN}━━━ FIO Benchmark Output (first 20 lines) ━━━${NC}\""
-"kubectl logs fio-pod --tail=20 || echo -e \"${YELLOW}Pod logs not yet available...${NC}\""
-)
+# Wait for FIO pod to be ready
+wait_fio_pod() {
+    echo_header "Waiting for FIO Pod to be Ready"
+    kubectl wait --for=condition=ready pod/fio-pod --timeout=300s || \
+        echo_warning "Warning: Pod may still be starting..."
+}
+
+# Check FIO pod status
+check_fio_status() {
+    echo_header "Checking FIO Pod Status"
+    kubectl get pods,pvc -o wide
+}
+
+# Show FIO logs
+show_fio_logs() {
+    echo_header "FIO Benchmark Output (first 20 lines)"
+    kubectl logs fio-pod --tail=20 || \
+        echo_warning "Pod logs not yet available..."
+}
 
 # Snapshot commands (run only with -s or --snapshot flag)
-snapshot_commands=(
+# Create volume snapshot
+create_snapshot() {
+    echo_header "Creating Volume Snapshot"
+    echo_info "This captures the current state of the PVC for cloning..."
 
-#SnapShot The PVC::
-"echo -e \"${CYAN}━━━ Creating Volume Snapshot ━━━${NC}\""
-"echo -e \"${CYAN}This captures the current state of the PVC for cloning...${NC}\""
-"kubectl apply -f snapshot/volumesnapshotclass.yaml"
-"kubectl apply -f snapshot/volumesnapshot.yaml"
+    kubectl apply -f snapshot/volumesnapshotclass.yaml || return 1
+    kubectl apply -f snapshot/volumesnapshot.yaml || return 1
+}
 
-#Wait for snapshot to be ready::
-"echo -e \"${CYAN}━━━ Waiting for Snapshot to be Ready ━━━${NC}\""
-"sleep 3"
+# Check snapshot status
+check_snapshot_status() {
+    echo_header "Waiting for Snapshot to be Ready"
+    sleep 3
 
-#Check the snapshot::
-"echo -e \"${CYAN}━━━ Checking Snapshot Status ━━━${NC}\""
-"kubectl get volumesnapshot,volumesnapshotcontent -o wide"
-)
+    echo_header "Checking Snapshot Status"
+    kubectl get volumesnapshot,volumesnapshotcontent -o wide
+}
 
 # Clone commands (run with -c flag, includes snapshot)
-clone_commands=(
+# Deploy clone from snapshot
+deploy_clone_pod() {
+    echo_header "Deploying Clone from Snapshot"
+    echo_info "This creates a new PVC from the snapshot and deploys a clone pod..."
 
-#Deploy App with Clone Data::
-"echo -e \"${CYAN}━━━ Deploying Clone from Snapshot ━━━${NC}\""
-"echo -e \"${CYAN}This creates a new PVC from the snapshot and deploys a clone pod...${NC}\""
-"kubectl apply -f clone/clone-pvc-from-snapshot.yaml"
-"watch_resource pvc fio-clone-pvc 30"
-"kubectl apply -f clone/fio-deployment-clone.yaml"
-"watch_resource pod fio-clone-pod 60"
+    kubectl apply -f clone/clone-pvc-from-snapshot.yaml || return 1
+    watch_resource pvc fio-clone-pvc 30 || return 1
 
-#Wait for clone pod::
-"echo -e \"${CYAN}━━━ Waiting for Clone Pod to be Ready ━━━${NC}\""
-"kubectl wait --for=condition=ready pod/fio-clone-pod --timeout=300s || echo -e \"${YELLOW}Warning: Clone pod may still be starting...${NC}\""
+    kubectl apply -f clone/fio-deployment-clone.yaml || return 1
+    watch_resource pod fio-clone-pod 60 || return 1
+}
 
-#Check the Clone Pod Details::
-"echo -e \"${CYAN}━━━ Checking Clone Pod Status ━━━${NC}\""
-"kubectl get pods,pvc -o wide"
+# Wait for clone pod
+wait_clone_pod() {
+    echo_header "Waiting for Clone Pod to be Ready"
+    kubectl wait --for=condition=ready pod/fio-clone-pod --timeout=300s || \
+        echo_warning "Warning: Clone pod may still be starting..."
+}
 
-#Show clone logs::
-"echo -e \"${CYAN}━━━ Clone FIO Benchmark Output (first 20 lines) ━━━${NC}\""
-"kubectl logs fio-clone-pod --tail=20 || echo -e \"${YELLOW}Clone pod logs not yet available...${NC}\""
-)
+# Check clone pod status
+check_clone_status() {
+    echo_header "Checking Clone Pod Status"
+    kubectl get pods,pvc -o wide
+}
 
+# Show clone logs
+show_clone_logs() {
+    echo_header "Clone FIO Benchmark Output (first 20 lines)"
+    kubectl logs fio-clone-pod --tail=20 || \
+        echo_warning "Clone pod logs not yet available..."
+}
 
 # Main demo function
-run_demo(){
+run_demo() {
     show_title
-    
-        # Run base commands
-    for cmd in "${commands[@]}"; do
-        
-        # Display the command with prompt (skip echo commands)
-        if [[ ! "$cmd" =~ ^echo ]]; then
-            echo -e "${CYAN}$ ${cmd}${NC}"
-        fi
-        sleep 0.5
-        
-        # Execute the command
-        eval "$cmd" 2>&1
-        
-        # Separator for readability
-        echo
-        echo -e "${YELLOW}─────────────────────────────────────${NC}"
-        echo
-        
-        # Small delay between commands
-        sleep 1
-    done
-    
+
+    # Run base demo commands
+    deploy_fio_pod || { echo_warning "Failed to deploy FIO pod"; return 1; }
+    wait_fio_pod
+    check_fio_status
+    show_fio_logs
+
     # Run snapshot commands if flag is set
-        # Run snapshot commands if flag is set
     if [ "$RUN_SNAPSHOT" = true ]; then
         echo -e "${CYAN}━━━ Running Snapshot Commands ━━━${NC}"
-        for cmd in "${snapshot_commands[@]}"; do
-            
-            # Display the command with prompt (skip echo commands)
-            if [[ ! "$cmd" =~ ^echo ]]; then
-                echo -e "${CYAN}$ ${cmd}${NC}"
-            fi
-            sleep 0.5
-            
-            # Execute the command
-            eval "$cmd" 2>&1
-            
-            # Separator for readability
-            echo
-            echo -e "${YELLOW}─────────────────────────────────────${NC}"
-            echo
-            
-            # Small delay between commands
-            sleep 1
-        done
+        create_snapshot || { echo_warning "Failed to create snapshot"; return 1; }
+        check_snapshot_status
     fi
-    
+
     # Run clone commands if flag is set (includes snapshot)
     if [ "$RUN_CLONE" = true ]; then
-        # First run snapshot commands if not already run
         if [ "$RUN_SNAPSHOT" != true ]; then
             echo -e "${CYAN}━━━ Running Snapshot Commands (required for clone) ━━━${NC}"
-            for cmd in "${snapshot_commands[@]}"; do
-                
-                # Display the command with prompt (skip echo commands)
-                if [[ ! "$cmd" =~ ^echo ]]; then
-                    echo -e "${CYAN}$ ${cmd}${NC}"
-                fi
-                sleep 0.5
-                
-                # Execute the command
-                eval "$cmd" 2>&1
-                
-                # Separator for readability
-                echo
-                echo -e "${YELLOW}─────────────────────────────────────${NC}"
-                echo
-                
-                # Small delay between commands
-                sleep 1
-            done
+            create_snapshot || { echo_warning "Failed to create snapshot"; return 1; }
+            check_snapshot_status
         fi
-        
-        # Now run clone commands
+
         echo -e "${CYAN}━━━ Running Clone Commands ━━━${NC}"
-        for cmd in "${clone_commands[@]}"; do
-            
-            # Display the command with prompt (skip echo commands)
-            if [[ ! "$cmd" =~ ^echo ]]; then
-                echo -e "${CYAN}$ ${cmd}${NC}"
-            fi
-            sleep 0.5
-            
-            # Execute the command
-            eval "$cmd" 2>&1
-            
-            # Separator for readability
-            echo
-            echo -e "${YELLOW}─────────────────────────────────────${NC}"
-            echo
-            
-            # Small delay between commands
-            sleep 1
-        done
- fi
-    # Demo completed message
-    echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${GREEN}       ✓ Demo completed successfully!${NC}"
-    echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo
-    echo -e "${CYAN}You can now:${NC}"
-    echo -e "  • View full FIO logs: ${CYAN}kubectl logs fio-pod${NC}"
-    echo -e "  • View clone logs: ${CYAN}kubectl logs fio-clone-pod${NC}"
-    echo -e "  • Check all resources: ${CYAN}kubectl get all,pvc,volumesnapshot${NC}"
+        deploy_clone_pod || { echo_warning "Failed to deploy clone pod"; return 1; }
+        wait_clone_pod
+        check_clone_status
+        show_clone_logs
+    fi
+
+    show_completion_message
 }
 
 # Function to run profile-based deployment
