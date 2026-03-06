@@ -15,10 +15,7 @@ This file tracks planned improvements and a history of changes for collaboration
 
 ## Working on
 
-- Clarify CLI flags and help text for -c / -s behavior in fio-demo.sh.
-  - Step 1: Update help text with detailed OPTIONS section (DONE).
-  - Step 2: Add EXAMPLES section showing flag combinations and workflows (DONE).
-  - Note: Conservative approach (Option A) - improved help text without changing existing logic.
+- Nothing
 
 ## Done
 
