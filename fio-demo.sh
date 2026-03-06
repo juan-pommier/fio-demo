@@ -5,6 +5,9 @@
 RUN_PROFILE=false
 RUN_SNAPSHOT=false
 RUN_CLONE=false
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
+. "${SCRIPT_DIR}/common.sh"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -36,14 +39,6 @@ while [[ $# -gt 0 ]]; do
               ;;
     esac
 done
-
-# Colors for better readability
-CYAN='\033[0;36m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-WHITE='\033[1;37m'
-NC='\033[0m' # No Color
 
 # Function to watch a resource until it's ready or timeout
 
@@ -162,26 +157,6 @@ clone_commands=(
 "kubectl logs fio-clone-pod --tail=20 || echo -e \"${YELLOW}Clone pod logs not yet available...${NC}\""
 )
 
-# Function to display title with custom ASCII art
-show_title() {
-    clear
-    echo -e "${RED} ********** ** ** ** ** ** **** **** ** ${NC}"
-    echo -e "${RED}/////**/// // /** // /** /**/**/** **/** /** ${NC}"
-    echo -e "${RED}     /**    **  *******  ******  ******  ** /**  /**/**//**  ** /**  ******  ******  ******  ******  ***** ${NC}"
-    echo -e "${RED}     /**   /**//**///**///**/ //**//*/** //** ** /**  //*** /**  **//// ///**/ **////**//**//* **///**${NC}"
-    echo -e "${WHITE}     /**   /**  /**  /**  /**   /**  / /** //** ** /**   //* /**//***** /**   /**  /**  /** / /*******${NC}"
-    echo -e "${WHITE}     /**   /**  /**  /**  /**   /**   /**  //**** /**    / /** /////** /**   /**  /**  /** /////// ${NC}"
-    echo -e "${WHITE}     /**   /**  *** /**  //**  //***  /**   //** /**      /**  ****** //** //****** //*** //******${NC}"
-    echo -e "${WHITE}     //    //  /// //    //   ///   //     //  //       //  //////  //  //////  ///  ////// ${NC}"
-    echo
-    echo -e "${RED}=====================================${NC}"
-    echo -e "${RED}       FIO Workload Demo${NC}"
-    echo -e "${RED}=====================================${NC}"
-    echo
-    echo -e "${GREEN}Running automatically with delays for readability${NC}"
-    echo -e "${GREEN}Press Ctrl+C to exit the demo${NC}"
-    echo
-}
 
 # Main demo function
 run_demo(){
