@@ -4,10 +4,6 @@ This file tracks the current tasks and their status for the fio-demo project.
 
 ## Pending Tasks (To-Do)
 
-## Working Tasks
-- [x] Add safety options (set -euo pipefail, kubectl presence/context checks) to all scripts.
-- [ ]   - Adding set -euo pipefail to all shell scripts
-- [ ]     - Adding kubectl presence and context checks to all scripts
 
 - [ ] Improve error handling and exit on failure in watch_resource and other kubectl calls.
 - [ ] Replace fixed sleep for snapshot readiness with a readiness check or kubectl wait.
@@ -19,6 +15,9 @@ This file tracks the current tasks and their status for the fio-demo project.
 
 
 ## Completed Tasks
+- [x] Add safety options (set -euo pipefail, kubectl presence/context checks) to all scripts.
+- [ ]   - Added set -euo pipefail to all shell scripts
+- [ ]     - Added kubectl presence and context checks to all scripts
 
 - [x] Simplify command arrays (avoid eval strings, favor direct functions/loops) in fio-demo.sh.
   - Step 1: Create helper functions (echo_header, echo_info, echo_warning, print_separator). (DONE - see REFACTORING_HELPERS.sh)
