@@ -1,10 +1,18 @@
 #!/bin/bash
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
+. "${SCRIPT_DIR}/common.sh"
+
 # Forcefully clean all pods, PVCs, and PVs in the current namespace or all namespaces
 
-NAMESPACE="${1:-default}"  # Default to 'default' if not passed as argument
+show_title
 
-echo "WARNING: This will delete all pods, PVCs, and PVs in namespace: $NAMESPACE"
+NAMESPACE="${1:-default}"  # Default to 'default' if not passed as argument
+echo -e "${YELLOW}Namespace to clean:${NC} $NAMESPACE"
+
+echo -e "${RED}WARNING:${NC} This will delete resources in namespace '$NAMESPACE'."
+echo -e "${GREEN}Type 'yes' to confirm:${NC}"
 read -p "Are you sure? Type 'yes' to continue: " confirm
 
 if [[ "$confirm" != "yes" ]]; then
