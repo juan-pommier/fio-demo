@@ -17,13 +17,13 @@ This file tracks the current tasks and their status for the fio-demo project.
 ## Completed Tasks
 
 - [x] Simplify command arrays (avoid eval strings, favor direct functions/loops) in fio-demo.sh.
-- [ ]   - Step 1: Create helper functions (echo_header, echo_info, echo_warning, print_separator). (DONE - see REFACTORING_HELPERS.sh)
-- [ ]     - Step 2: Refactor base demo commands into focused functions (deploy_fio_pod, wait_fio_pod, check_fio_status, show_fio_logs). (DONE)
-- [ ]   - Step 3: Refactor snapshot commands into functions (create_snapshot, check_snapshot). (DONE)
-- [ ]     - Step 4: Refactor clone commands into functions (deploy_clone_pod, check_clone_status). (DONE)
-- [ ]   - Step 5: Update run_demo() to call functions directly instead of eval loops. (DONE)
-- [ ]     - Step 6: Remove old command arrays (commands, snapshot_commands, clone_commands). (DONE)
-- [ ]   - Completed in commit 6a7e43e (Phase 2-6: Simplify Command Arrays)
+  - Step 1: Create helper functions (echo_header, echo_info, echo_warning, print_separator). (DONE - see REFACTORING_HELPERS.sh)
+  - Step 2: Refactor base demo commands into focused functions (deploy_fio_pod, wait_fio_pod, check_fio_status, show_fio_logs). (DONE)
+  - Step 3: Refactor snapshot commands into functions (create_snapshot, check_snapshot). (DONE)
+  - Step 4: Refactor clone commands into functions (deploy_clone_pod, check_clone_status). (DONE)
+  - Step 5: Update run_demo() to call functions directly instead of eval loops. (DONE)
+  - Step 6: Remove old command arrays (commands, snapshot_commands, clone_commands). (DONE)
+  - Completed in commit 6a7e43e (Phase 2-6: Simplify Command Arrays)
 
 - [x] Clarify CLI flags and help text for -c / -s behavior in fio-demo.sh.
   - Step 1: Update help text with detailed OPTIONS section (DONE).
