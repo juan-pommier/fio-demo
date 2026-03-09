@@ -7,6 +7,12 @@ RUN_PROFILE=false
 RUN_SNAPSHOT=false
 RUN_CLONE=false
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Resource name variables (can be overridden via environment or function parameters)
+FIO_PVC_NAME="${FIO_PVC_NAME:-$FIO_PVC_NAME}"
+FIO_POD_NAME="${FIO_POD_NAME:-$FIO_POD_NAME}"
+FIO_CLONE_PVC_NAME="${FIO_CLONE_PVC_NAME:-$FIO_CLONE_PVC_NAME}"
+FIO_CLONE_POD_NAME="${FIO_CLONE_POD_NAME:-$FIO_CLONE_POD_NAME}"
+
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}/common.sh"
 
@@ -116,17 +122,17 @@ deploy_fio_pod() {
     echo_header "Deploying FIO Workload Pod"
     echo_info "This will create a PVC and deploy a FIO pod that runs I/O benchmarks..."
 
-    kubectl apply -f deployment/fio-pvc.yaml || return 1
-    watch_resource pvc fio-pvc 30 || return 1
+    kubectl apply -f deployment/$FIO_PVC_NAME.yaml || return 1
+    watch_resource pvc $FIO_PVC_NAME 30 || return 1
 
     kubectl apply -f deployment/fio-deployment.yaml || return 1
-    watch_resource pod fio-pod 60 || return 1
+    watch_resource pod $FIO_POD_NAME 60 || return 1
 }
 
 # Wait for FIO pod to be ready
 wait_fio_pod() {
     echo_header "Waiting for FIO Pod to be Ready"
-    kubectl wait --for=condition=ready pod/fio-pod --timeout=300s || \
+    kubectl wait --for=condition=ready pod/$FIO_POD_NAME --timeout=300s || \
         echo_warning "Warning: Pod may still be starting..."
 }
 
@@ -139,7 +145,7 @@ check_fio_status() {
 # Show FIO logs
 show_fio_logs() {
     echo_header "FIO Benchmark Output (first 20 lines)"
-    kubectl logs fio-pod --tail=20 || \
+    kubectl logs $FIO_POD_NAME --tail=20 || \
         echo_warning "Pod logs not yet available..."
 }
 
@@ -168,16 +174,16 @@ deploy_clone_pod() {
     echo_info "This creates a new PVC from the snapshot and deploys a clone pod..."
 
     kubectl apply -f clone/clone-pvc-from-snapshot.yaml || return 1
-    watch_resource pvc fio-clone-pvc 30 || return 1
+    watch_resource pvc $FIO_CLONE_PVC_NAME 30 || return 1
 
     kubectl apply -f clone/fio-deployment-clone.yaml || return 1
-    watch_resource pod fio-clone-pod 60 || return 1
+    watch_resource pod $FIO_CLONE_POD_NAME 60 || return 1
 }
 
 # Wait for clone pod
 wait_clone_pod() {
     echo_header "Waiting for Clone Pod to be Ready"
-    kubectl wait --for=condition=ready pod/fio-clone-pod --timeout=300s || \
+    kubectl wait --for=condition=ready pod/$FIO_CLONE_POD_NAME --timeout=300s || \
         echo_warning "Warning: Clone pod may still be starting..."
 }
 
@@ -190,7 +196,7 @@ check_clone_status() {
 # Show clone logs
 show_clone_logs() {
     echo_header "Clone FIO Benchmark Output (first 20 lines)"
-    kubectl logs fio-clone-pod --tail=20 || \
+    kubectl logs $FIO_CLONE_POD_NAME --tail=20 || \
         echo_warning "Clone pod logs not yet available..."
 }
 
@@ -324,10 +330,10 @@ spec:
                 --ioengine=libaio \\
                 --thread
         volumeMounts:
-        - name: fio-pvc
+        - name: $FIO_PVC_NAME
           mountPath: /data
       volumes:
-      - name: fio-pvc
+      - name: $FIO_PVC_NAME
         persistentVolumeClaim:
           claimName: ${PVC_NAME}
 EOF
