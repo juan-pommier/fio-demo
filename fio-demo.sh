@@ -168,7 +168,8 @@ create_snapshot() {
 # Check snapshot status
 check_snapshot_status() {
     echo_header "Waiting for Snapshot to be Ready"
- kubectl wait --for=condition=readyToUse volumesnapshot -n "$FIO_NAMESPACE" --timeout=60s 2>/dev/null || true    echo_header "Checking Snapshot Status"
+ kubectl wait --for=condition=readyToUse volumesnapshot -n "$FIO_NAMESPACE" --timeout=60s 2>/dev/null || true    
+ echo_header "Checking Snapshot Status"
     kubectl get volumesnapshot,volumesnapshotcontent -o wide
 }
 
