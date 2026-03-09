@@ -58,6 +58,11 @@ This file tracks the current tasks and their status for the fio-demo project.
   - Step 6: Enables concurrent runs with isolated namespaces via FIO_NAMESPACE environment variable.
   -   - Step 7: Modified FIO_NAMESPACE to detect the current context's default namespace using 'kubectl config view' with fallback to 'default'.
       -   - Step 8: Committed changes with message 'Feat: Use current context namespace by default for FIO_NAMESPACE'.
+          - 
+          - [x] **Fix critical syntax error** in fio-demo.sh (missing `fi` to close if statement).
+          - [ ]   - Step 1: Added missing `fi` statement at end of script to close the conditional block starting at line 356 (if [ "$RUN_PROFILE" = true ]; then).
+          - [ ]     - Step 2: This fixed the bash syntax error: "./fio-demo.sh: line 362: syntax error: unexpected end of file".
+          - [ ]   - Committed changes with message 'Fix: Add missing fi to close if statement at end of script'.
 
 
 -  Make force-clean.sh safer (no default namespace, stronger confirmation, avoid cluster-wide PV deletes).
