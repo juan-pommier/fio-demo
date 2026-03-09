@@ -357,5 +357,6 @@ if [ "$RUN_PROFILE" = true ]; then
     run_profile_deployment
 else
     run_demo
+    fi
 fi
 
