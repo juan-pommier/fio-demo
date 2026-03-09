@@ -5,7 +5,6 @@ This file tracks the current tasks and their status for the fio-demo project.
 ## Pending Tasks (To-Do)
 
 
-- [ ] Replace fixed sleep for snapshot readiness with a readiness check or kubectl wait.
 
 - [ ] Externalize or clean up long YAML here-docs for better readability.
 - [ ] Parameterize resource names to support multiple concurrent runs.
@@ -13,6 +12,11 @@ This file tracks the current tasks and their status for the fio-demo project.
 
 
 ## Completed Tasks
+- [x] Replace fixed sleep for snapshot readiness with a readiness check or kubectl wait.
+- [ ]     - Step 1: Modified check_snapshot_status() in fio-demo.sh (line 159).
+- [ ]     - Step 2: Replaced 'sleep 3' with 'kubectl wait --for=condition=readyToUse volumesnapshot --timeout=60s'
+- [ ]     - Step 3: Actively waits for volumesnapshot readiness condition instead of fixed 3-second delay.
+- [ ]     - Step 4: Committed changes with message 'Improve: Replace fixed sleep with kubectl wait for snapshot readiness'.
 - [x] Improve error handling and exit on failure in watch_resource and other kubectl calls.
 - [ ]     - Step 1: Removed '2>/dev/null' redirects from kubectl get commands in watch_resource function (lines 87, 92, 100).
 - [ ]     - Step 2: These redirects were hiding failures from kubectl commands, preventing proper error detection and propagation.
