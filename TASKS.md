@@ -47,13 +47,16 @@ This file tracks the current tasks and their status for the fio-demo project.
   - Step 3: Updated cleanup.sh to source common.sh and removed local colors/banner.
   - Step 4: Updated force-clean.sh to source common.sh and added colors/banner usage.
      
-  - - [x] Parameterize resource names to support multiple concurrent runs.
+  - - [x] 56
+    - [ ]  to support multiple concurrent runs.
   - Step 1: Added FIO_NAMESPACE variable with configurable default ("default" namespace).
   - Step 2: Added ensure_namespace() function to create namespace if it doesn't exist.
   - Step 3: Added namespace flags (-n) to all kubectl commands in deploy_fio_pod and watch_resource functions.
   - Step 4: Updated watch_resource function to use namespace for kubectl get and kubectl wait commands.
   - Step 5: Committed changes with message 'Feat: Add namespace parameterization and auto-creation for FIO resources'.
   - Step 6: Enables concurrent runs with isolated namespaces via FIO_NAMESPACE environment variable.
+  -   - Step 7: Modified FIO_NAMESPACE to detect the current context's default namespace using 'kubectl config view' with fallback to 'default'.
+      -   - Step 8: Committed changes with message 'Feat: Use current context namespace by default for FIO_NAMESPACE'.
 
 ---
 
