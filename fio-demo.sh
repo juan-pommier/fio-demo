@@ -8,10 +8,13 @@ RUN_SNAPSHOT=false
 RUN_CLONE=false
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Resource name variables (can be overridden via environment or function parameters)
-FIO_PVC_NAME="${FIO_PVC_NAME:-$FIO_PVC_NAME}"
-FIO_POD_NAME="${FIO_POD_NAME:-$FIO_POD_NAME}"
-FIO_CLONE_PVC_NAME="${FIO_CLONE_PVC_NAME:-$FIO_CLONE_PVC_NAME}"
-FIO_CLONE_POD_NAME="${FIO_CLONE_POD_NAME:-$FIO_CLONE_POD_NAME}"
+# Resource names with defaults (override via environment: FIO_PVC_NAME=custom-name ./fio-demo.sh)
+FIO_PVC_NAME="fio-pvc"
+FIO_POD_NAME="fio-pod"
+FIO_CLONE_PVC_NAME="fio-clone-pvc"
+FIO_CLONE_POD_NAME="fio-clone-pod"
+
+
 
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}/common.sh"
