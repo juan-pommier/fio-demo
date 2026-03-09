@@ -113,7 +113,8 @@ watch_resource() {
             fi
         elif [ "$resource_type" = "pod" ]; then
             # For Pod, check if all containers are ready
- local ready=$(kubectl get pod $resource_name -n "$FIO_NAMESPACE" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' )            if [ "$ready" = "True" ]; then
+ local ready=$(kubectl get pod $resource_name -n "$FIO_NAMESPACE" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' )            
+ if [ "$ready" = "True" ]; then
                 echo -e "${GREEN}✓ Pod is Ready!${NC}"
                 sleep 2
                 break
