@@ -141,21 +141,18 @@ deploy_fio_pod() {
 # Wait for FIO pod to be ready
 wait_fio_pod() {
     echo_header "Waiting for FIO Pod to be Ready"
-    kubectl wait --for=condition=ready pod/$FIO_POD_NAME --timeout=300s || \
-        echo_warning "Warning: Pod may still be starting..."
+ kubectl wait --for=condition=ready pod/$FIO_POD_NAME -n "$FIO_NAMESPACE" --timeout=300s || \        echo_warning "Warning: Pod may still be starting..."
 }
 
 # Check FIO pod status
 check_fio_status() {
     echo_header "Checking FIO Pod Status"
-    kubectl get pods,pvc -o wide
-}
+ kubectl get pods,pvc -n "$FIO_NAMESPACE" -o wide}
 
 # Show FIO logs
 show_fio_logs() {
     echo_header "FIO Benchmark Output (first 20 lines)"
-    kubectl logs $FIO_POD_NAME --tail=20 || \
-        echo_warning "Pod logs not yet available..."
+ kubectl logs $FIO_POD_NAME -n "$FIO_NAMESPACE" --tail=20 || \        echo_warning "Pod logs not yet available..."
 }
 
 # Snapshot commands (run only with -s or --snapshot flag)
@@ -171,8 +168,7 @@ create_snapshot() {
 # Check snapshot status
 check_snapshot_status() {
     echo_header "Waiting for Snapshot to be Ready"
- kubectl wait --for=condition=readyToUse volumesnapshot --timeout=60s 2>/dev/null || true
-    echo_header "Checking Snapshot Status"
+ kubectl wait --for=condition=readyToUse volumesnapshot -n "$FIO_NAMESPACE" --timeout=60s 2>/dev/null || true    echo_header "Checking Snapshot Status"
     kubectl get volumesnapshot,volumesnapshotcontent -o wide
 }
 
