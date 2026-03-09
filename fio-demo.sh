@@ -357,3 +357,4 @@ if [ "$RUN_PROFILE" = true ]; then
 else
     run_demo
 fi
+
