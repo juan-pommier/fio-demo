@@ -84,12 +84,12 @@ watch_resource() {
         # Display current status
         clear
         echo -e "${CYAN}Watching $resource_type/$resource_name... ($(($end_time - $current_time))s remaining)${NC}"
-        kubectl get $resource_type $resource_name -o wide 2>/dev/null
+        kubectl get $resource_type $resource_name -o w
         
         # Check if resource is ready
         if [ "$resource_type" = "pvc" ]; then
             # For PVC, check if status is Bound
-            local status=$(kubectl get pvc $resource_name -o jsonpath='{.status.phase}' 2>/dev/null)
+            local status=$(kubectl get pvc $resource_name -o jsonpath='{.status.phase}')
             if [ "$status" = "Bound" ]; then
                 echo -e "${GREEN}✓ PVC is Bound!${NC}"
                 sleep 2
@@ -97,7 +97,7 @@ watch_resource() {
             fi
         elif [ "$resource_type" = "pod" ]; then
             # For Pod, check if all containers are ready
-            local ready=$(kubectl get pod $resource_name -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)
+            local ready=$(kubectl get pod $resource_name -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' )
             if [ "$ready" = "True" ]; then
                 echo -e "${GREEN}✓ Pod is Ready!${NC}"
                 sleep 2
