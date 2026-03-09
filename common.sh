@@ -38,3 +38,8 @@ echo_warning() {
 echo_error() {
   echo -e "${RED}✗ $1${NC}"
 }
+
+# Completion message with checkmark
+show_completion_message() {
+  echo -e "${GREEN}✓ $1${NC}"
+}
