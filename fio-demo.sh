@@ -106,8 +106,8 @@ watch_resource() {
         # Check if resource is ready
         if [ "$resource_type" = "pvc" ]; then
             # For PVC, check if status is Bound
- local status=$(kubectl get pvc $resource_name -n "$FIO_NAMESPACE" -o jsonpath='{.status.phase}')            if [ "$status" = "Bound" ]; then
-                echo -e "${GREEN}✓ PVC is Bound!${NC}"
+ local status=$(kubectl get pvc $resource_name -n "$FIO_NAMESPACE" -o jsonpath='{.status.phase}')                echo -e "${GREEN}✓ PVC is Bound!${NC}"
+  if [ "$status" = "Bound" ]; then
                 sleep 2
                 break
             fi
