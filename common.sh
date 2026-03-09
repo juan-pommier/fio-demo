@@ -21,3 +21,20 @@ show_title() {
   echo -e "${WHITE}   //      //////    ////// // //  // //   ////// //////  //////  //////  ////// ${NC}"
   echo
 }
+
+# Helper functions for logging and messaging
+echo_header() {
+  echo -e "${CYAN}=== $1 ===${NC}"
+}
+
+echo_info() {
+  echo -e "${GREEN}→ $1${NC}"
+}
+
+echo_warning() {
+  echo -e "${YELLOW}⚠ $1${NC}"
+}
+
+echo_error() {
+  echo -e "${RED}✗ $1${NC}"
+}
