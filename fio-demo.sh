@@ -13,7 +13,7 @@ FIO_PVC_NAME="fio-pvc"
 FIO_POD_NAME="fio-pod"
 FIO_CLONE_PVC_NAME="fio-clone-pvc"
 FIO_CLONE_POD_NAME="fio-clone-pod"
-FIO_NAMESPACE="${FIO_NAMESPACE:-$(kubectl config view --minify -o jsonpath='{.contexts[0].context.namespace}' 2>/dev/null) || echo 'default'}"
+FIO_NAMESPACE="${FIO_NAMESPACE:-$(kubectl config view --minify -o jsonpath='{.contexts[0].context.namespace}' 2>/dev/null || echo 'default')}"16
 # Create namespace if it doesn't exist (uses current context by default, override via FIO_NAMESPACE env var)
 
 
