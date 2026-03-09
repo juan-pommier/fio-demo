@@ -156,8 +156,7 @@ create_snapshot() {
 # Check snapshot status
 check_snapshot_status() {
     echo_header "Waiting for Snapshot to be Ready"
-    sleep 3
-
+ kubectl wait --for=condition=readyToUse volumesnapshot --timeout=60s 2>/dev/null || true
     echo_header "Checking Snapshot Status"
     kubectl get volumesnapshot,volumesnapshotcontent -o wide
 }
