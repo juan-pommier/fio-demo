@@ -13,11 +13,21 @@ FIO_PVC_NAME="fio-pvc"
 FIO_POD_NAME="fio-pod"
 FIO_CLONE_PVC_NAME="fio-clone-pvc"
 FIO_CLONE_POD_NAME="fio-clone-pod"
+FIO_NAMESPACE="${FIO_NAMESPACE:-default}"
+# Create namespace if it doesn't exist
 
 
 
 # shellcheck source=/dev/null
 . "${SCRIPT_DIR}/common.sh"
+
+# Ensure namespace exists or create it
+ensure_namespace() {
+ if ! kubectl get namespace "$FIO_NAMESPACE" &>/dev/null; then
+  echo_info "Creating namespace: $FIO_NAMESPACE"
+  kubectl create namespace "$FIO_NAMESPACE" || return 1
+ fi
+}
 
 # Check kubectl presence
 if ! command -v kubectl &> /dev/null; then
@@ -93,21 +103,18 @@ watch_resource() {
         # Display current status
         clear
         echo -e "${CYAN}Watching $resource_type/$resource_name... ($(($end_time - $current_time))s remaining)${NC}"
-        kubectl get $resource_type $resource_name -o w
-        
+ kubectl get $resource_type $resource_name -n "$FIO_NAMESPACE" -o wide        
         # Check if resource is ready
         if [ "$resource_type" = "pvc" ]; then
             # For PVC, check if status is Bound
-            local status=$(kubectl get pvc $resource_name -o jsonpath='{.status.phase}')
-            if [ "$status" = "Bound" ]; then
+ local status=$(kubectl get pvc $resource_name -n "$FIO_NAMESPACE" -o jsonpath='{.status.phase}')            if [ "$status" = "Bound" ]; then
                 echo -e "${GREEN}✓ PVC is Bound!${NC}"
                 sleep 2
                 break
             fi
         elif [ "$resource_type" = "pod" ]; then
             # For Pod, check if all containers are ready
-            local ready=$(kubectl get pod $resource_name -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' )
-            if [ "$ready" = "True" ]; then
+ local ready=$(kubectl get pod $resource_name -n "$FIO_NAMESPACE" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' )            if [ "$ready" = "True" ]; then
                 echo -e "${GREEN}✓ Pod is Ready!${NC}"
                 sleep 2
                 break
@@ -122,14 +129,13 @@ watch_resource() {
 }
 # Deploy FIO pod and PVC
 deploy_fio_pod() {
+ ensure_namespace || return 1
     echo_header "Deploying FIO Workload Pod"
     echo_info "This will create a PVC and deploy a FIO pod that runs I/O benchmarks..."
 
-    kubectl apply -f deployment/$FIO_PVC_NAME.yaml || return 1
-    watch_resource pvc $FIO_PVC_NAME 30 || return 1
+ kubectl apply -f deployment/$FIO_PVC_NAME.yaml -n "$FIO_NAMESPACE" || return 1    watch_resource pvc $FIO_PVC_NAME 30 || return 1
 
-    kubectl apply -f deployment/fio-deployment.yaml || return 1
-    watch_resource pod $FIO_POD_NAME 60 || return 1
+ kubectl apply -f deployment/fio-deployment.yaml -n "$FIO_NAMESPACE" || return 1    watch_resource pod $FIO_POD_NAME 60 || return 1
 }
 
 # Wait for FIO pod to be ready
