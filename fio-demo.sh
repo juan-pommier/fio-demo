@@ -239,7 +239,7 @@ run_demo() {
         show_clone_logs
     fi
 
-    show_completion_message
+    show_completion_message "Demo Completed!"
 }
 
 # Function to run profile-based deployment
