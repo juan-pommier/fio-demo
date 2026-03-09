@@ -15,7 +15,14 @@ fi
 
 show_title
 
-NAMESPACE="${1:-default}"  # Default to 'default' if not passed as argument
+# Require explicit namespace - no default to prevent accidents
+if [ -z "${1:-}" ]; then
+  echo_error "ERROR: Namespace argument required!"
+  echo_info "Usage: $0 <namespace>"
+  exit 1
+fi
+NAMESPACE="$1"
+
 echo -e "${YELLOW}Namespace to clean:${NC} $NAMESPACE"
 
 echo -e "${RED}WARNING:${NC} This will delete resources in namespace '$NAMESPACE'."
@@ -33,7 +40,15 @@ kubectl delete pods --all -n "$NAMESPACE" --grace-period=0 --force
 echo "Deleting PVCs in $NAMESPACE..."
 kubectl delete pvc --all -n "$NAMESPACE"
 
-echo "Deleting PVs cluster-wide..."
-kubectl delete pv --all
+
+
+echo_warning "WARNING: Cluster-wide PV deletion is DANGEROUS and may affect other namespaces!"
+read -p "Do you REALLY want to delete ALL PVs cluster-wide? Type 'I understand': " pv_confirm
+if [[ "$pv_confirm" != "I understand" ]]; then
+  echo_info "Cluster-wide PV deletion skipped."
+else
+  echo " Deleting PVs cluster-wide..."
+  kubectl delete pv --all
+fi
 
 echo "Cleanup complete!"
