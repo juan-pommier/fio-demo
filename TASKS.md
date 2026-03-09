@@ -7,7 +7,8 @@ This file tracks the current tasks and their status for the fio-demo project.
 
 
 - [ ] Externalize or clean up long YAML here-docs for better readability.
-- [ ] Make force-clean.sh safer (no default namespace, stronger confirmation, avoid cluster-wide PV deletes).
+- [ ]     - **Implementation Plan:** Replace the inline YAML here-docs in `run_profile_deployment()` function (fio-demo.sh, lines 286-344) with `envsubst` calls using template files.
+- [ ]     - **Details:** Use `fio-profile-pvc-template.yaml` and `fio-profile-deployment-template.yaml` with variable substitution instead of embedding 60-line YAML blocks inline.
 
 
 ## Completed Tasks
@@ -58,6 +59,12 @@ This file tracks the current tasks and their status for the fio-demo project.
   -   - Step 7: Modified FIO_NAMESPACE to detect the current context's default namespace using 'kubectl config view' with fallback to 'default'.
       -   - Step 8: Committed changes with message 'Feat: Use current context namespace by default for FIO_NAMESPACE'.
 
+
+-  Make force-clean.sh safer (no default namespace, stronger confirmation, avoid cluster-wide PV deletes).
+-      - Step 1: Modified force-clean.sh to require explicit namespace argument (no default to prevent accidents).
+-      - Step 2: Enhanced confirmation requirements: user must type 'yes' for namespace cleanup and 'I understand' for cluster-wide PV deletion.
+-      - Step 3: Added safety checks to prevent cluster-wide PV deletion without explicit user confirmation.
+-      - Step 4: Committed changes with message 'Refactor: Make force-clean.sh safer with required namespace and PV confirmation checks'.
 ---
 
 **Last Updated:** When this file is modified
