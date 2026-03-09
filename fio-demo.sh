@@ -147,7 +147,8 @@ wait_fio_pod() {
 # Check FIO pod status
 check_fio_status() {
     echo_header "Checking FIO Pod Status"
- kubectl get pods,pvc -n "$FIO_NAMESPACE" -o wide}
+ kubectl get pods,pvc -n "$FIO_NAMESPACE" -o wide
+ }
 
 # Show FIO logs
 show_fio_logs() {
@@ -275,8 +276,7 @@ run_profile_deployment() {
     TS=$(date +%s)
     BASE_NAME="fio-${PROFILE}-${TS}"
     
-    OUTFILE="${BASE_NAME}-bundle.yaml"
-    > $OUTFILE
+    OUTFILE="${BASE_NAME}-bundle.yaml" > $OUTFILE
     
     echo -e "${CYAN}Generating YAML bundle...${NC}"
     
