@@ -5,16 +5,19 @@ This file tracks the current tasks and their status for the fio-demo project.
 ## Pending Tasks (To-Do)
 
 
-- [ ] Improve error handling and exit on failure in watch_resource and other kubectl calls.
 - [ ] Replace fixed sleep for snapshot readiness with a readiness check or kubectl wait.
 
 - [ ] Externalize or clean up long YAML here-docs for better readability.
 - [ ] Parameterize resource names to support multiple concurrent runs.
 - [ ] Make force-clean.sh safer (no default namespace, stronger confirmation, avoid cluster-wide PV deletes).
 
-- [ ] Improve error handling and exit on failure in watch_resource and other kubectl calls.
 
 ## Completed Tasks
+- [x] Improve error handling and exit on failure in watch_resource and other kubectl calls.
+- [ ]     - Step 1: Removed '2>/dev/null' redirects from kubectl get commands in watch_resource function (lines 87, 92, 100).
+- [ ]     - Step 2: These redirects were hiding failures from kubectl commands, preventing proper error detection and propagation.
+- [ ]     - Step 3: Committed changes with message 'Fix: Remove error-hiding 2>/dev/null redirects from watch_resource function'.
+- [ ]     - Step 4: Fixes align with WORKFLOW.md guidelines: errors now properly surface and can be caught by '|| return 1' patterns in calling functions.
 - [x] Add safety options (set -euo pipefail, kubectl presence/context checks) to all scripts.
    - Added set -euo pipefail to all shell scripts
    - Added kubectl presence and context checks to all scripts
