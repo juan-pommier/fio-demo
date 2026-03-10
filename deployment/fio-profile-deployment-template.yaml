@@ -14,32 +14,32 @@ spec:
         app: ${DEPLOY_NAME}
     spec:
       containers:
-      - name: fio
-        image: ljishen/fio
-        command:
-        - /bin/sh
-        - -c
-        - |
-          set -e
-          fallocate -l 10G /data/testfile || dd if=/dev/zero of=/data/testfile bs=1M count=10240
-          fio --name=${PROFILE}demo-pvc-perf \\
-          --filename=/data/testfile \\
-          --bs=8k \\
-          --size=10G \\
-          --rw=randrw \\
-          --rwmixread=${RWMIX} \\
-          --iodepth=4 \\
-          --numjobs=1 \\
-          --direct=1 \\
-          --runtime=600 \\
-          --time_based \\
-          --group_reporting \\
-          --ioengine=libaio \\
-          --thread
-        volumeMounts:
-        - name: fio-pvc
-          mountPath: /data
+        - name: fio
+          image: ghcr.io/containers/fio:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              mkdir -p /data
+              fallocate -l 8G /data/testfile || dd if=/dev/zero of=/data/testfile bs=1M count=8192
+              fio --name=${PROFILE}demo-pvc-perf \
+                --filename=/data/testfile \
+                --rw=randrw \
+                --rwmixread=${RWMIX} \
+                --bs=4k \
+                --size=8G \
+                --numjobs=4 \
+                --runtime=600 \
+                --time_based \
+                --iodepth=32 \
+                --direct=1 \
+                --ioengine=libaio \
+                --group_reporting
+          volumeMounts:
+            - name: fio-pvc
+              mountPath: /data
       volumes:
-      - name: fio-pvc
-        persistentVolumeClaim:
-          claimName: ${PVC_NAME}
+        - name: fio-pvc
+          persistentVolumeClaim:
+            claimName: ${PVC_NAME}
