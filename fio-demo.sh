@@ -271,80 +271,25 @@ run_profile_deployment() {
         exit 1
     fi
     
-    STORAGECLASS="vmstore-csi-file-driver-sc"
-    PVC_SIZE="25Gi"
     TS=$(date +%s)
     BASE_NAME="fio-${PROFILE}-${TS}"
     
     OUTFILE="${BASE_NAME}-bundle.yaml" > $OUTFILE
     
     echo -e "${CYAN}Generating YAML bundle...${NC}"
-    
+    envsubst < deployment/fio-profile-storageclass-template.yaml > "$OUTFILE"
+
     for i in $(seq 1 $INSTANCES); do
-        PVC_NAME="${BASE_NAME}-pvc-${i}"
-        DEPLOY_NAME="${BASE_NAME}-deploy-${i}"
-        
-        cat <<EOF >> $OUTFILE
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: ${PVC_NAME}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: ${PVC_SIZE}
-  storageClassName: ${STORAGECLASS}
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: ${DEPLOY_NAME}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ${DEPLOY_NAME}
-  template:
-    metadata:
-      labels:
-        app: ${DEPLOY_NAME}
-    spec:
-      containers:
-      - name: fio
-        image: ljishen/fio
-        command:
-          - /bin/sh
-          - -c
-          - |
-            set -e
-            fallocate -l 10G /data/testfile || dd if=/dev/zero of=/data/testfile bs=1M count=10240
-            fio --name=${PROFILE}demo-pvc-perf \\
-                --filename=/data/testfile \\
-                --bs=8k \\
-                --size=10G \\
-                --rw=randrw \\
-                --rwmixread=${RWMIX} \\
-                --iodepth=4 \\
-                --numjobs=1 \\
-                --direct=1 \\
-                --runtime=600 \\
-                --time_based \\
-                --group_reporting \\
-                --ioengine=libaio \\
-                --thread
-        volumeMounts:
-        - name: $FIO_PVC_NAME
-          mountPath: /data
-      volumes:
-      - name: $FIO_PVC_NAME
-        persistentVolumeClaim:
-          claimName: ${PVC_NAME}
-EOF
+        export PVC_NAME="${BASE_NAME}-pvc-${i}"
+        export DEPLOY_NAME="${BASE_NAME}-deploy-${i}"
+        export STORAGE_CLASS_NAME="vmstore-csi-file-driver-sc"
+        export PVC_SIZE="25Gi"
+        # PROFILE and RWMIX already set above
+
+        envsubst < deployment/fio-profile-pvc-template.yaml >> "$OUTFILE"
+        envsubst < deployment/fio-profile-deployment-template.yaml >> "$OUTFILE"
     done
-    
+
     echo
     echo -e "${GREEN}✓ YAML bundle generated: $OUTFILE${NC}"
     echo -e "${CYAN}To deploy, run: ${WHITE}kubectl apply -f $OUTFILE${NC}"
