@@ -67,7 +67,7 @@ while [[ $# -gt 0 ]]; do
             echo "  $0              # Run base demo only"
             echo "  $0 -s           # Run: base demo → snapshot"
             echo "  $0 -c           # Run: base demo → snapshot → clone"
-            
+            exit 0
             ;;
             *)
               echo "Unknown option: $1"
