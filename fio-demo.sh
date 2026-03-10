@@ -257,11 +257,11 @@ run_profile_deployment() {
     read -p "Enter choice [1-5]: " profile_choice
     
     case $profile_choice in
-        1) PROFILE="8020"; RWMIX=80;;
-        2) PROFILE="9010"; RWMIX=90;;
-        3) PROFILE="7030"; RWMIX=70;;
-        4) PROFILE="1090"; RWMIX=10;;
-        5) PROFILE="199";  RWMIX=1;;
+        1) export PROFILE="8020"; export RWMIX=80;;
+        2) export PROFILE="9010"; export RWMIX=90;;
+        3) export PROFILE="7030"; export RWMIX=70;;
+        4) export PROFILE="1090"; export RWMIX=10;;
+        5) export PROFILE="199";  export RWMIX=1;;
         *) echo -e "${RED}Invalid choice${NC}"; exit 1;;
     esac
     
@@ -284,7 +284,6 @@ run_profile_deployment() {
         export PVC_NAME="${BASE_NAME}-pvc-${i}"
         export DEPLOY_NAME="${BASE_NAME}-deploy-${i}"
         export PVC_SIZE="25Gi"
-        # PROFILE and RWMIX already set above
 
         envsubst < deployment/fio-profile-pvc-template.yaml >> "$OUTFILE"
         envsubst < deployment/fio-profile-deployment-template.yaml >> "$OUTFILE"
@@ -303,5 +302,3 @@ if [ "$RUN_PROFILE" = true ]; then
 else
     run_demo
 fi
-
-
