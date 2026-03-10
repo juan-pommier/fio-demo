@@ -274,15 +274,15 @@ run_profile_deployment() {
     TS=$(date +%s)
     BASE_NAME="fio-${PROFILE}-${TS}"
     
-    OUTFILE="${BASE_NAME}-bundle.yaml" > $OUTFILE
+    OUTFILE="${BASE_NAME}-bundle.yaml"
     
     echo -e "${CYAN}Generating YAML bundle...${NC}"
+    export STORAGE_CLASS_NAME="tintri-csi-workload-pvc"
     envsubst < deployment/fio-profile-storageclass-template.yaml > "$OUTFILE"
 
     for i in $(seq 1 $INSTANCES); do
         export PVC_NAME="${BASE_NAME}-pvc-${i}"
         export DEPLOY_NAME="${BASE_NAME}-deploy-${i}"
-        export STORAGE_CLASS_NAME="vmstore-csi-file-driver-sc"
         export PVC_SIZE="25Gi"
         # PROFILE and RWMIX already set above
 
