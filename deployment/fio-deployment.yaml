@@ -17,27 +17,23 @@ spec:
     command: ["/bin/sh", "-c"]
     args:
       - |
-        - /bin/sh
-        - -c
-        - |
-          set -e
-          mkdir -p /data
-          fallocate -l 8G /data/testfile || dd if=/dev/zero of=/data/testfile bs=1M count=8192
-          echo "Generating high-IOPS, low-latency workload (80% reads, 20% writes)...";
-          fio --name=highiops \
-            --filename=/data/testfile \
-            --size=512M \
-            --rw=randrw \
-            --rwmixread=80 \
-            --bs=4k \
-            --size=8G \
-            --numjobs=4 \
-            --runtime=600 \
-            --time_based \
-            --iodepth=32 \
-            --direct=1 \
-            --ioengine=libaio \
-            --group_reporting
+        set -e
+        mkdir -p /data
+        fallocate -l 8G /data/testfile || dd if=/dev/zero of=/data/testfile bs=1M count=8192
+        echo "Generating high-IOPS, low-latency workload (80% reads, 20% writes)..."
+        fio --name=highiops \
+          --filename=/data/testfile \
+          --rw=randrw \
+          --rwmixread=80 \
+          --bs=4k \
+          --size=8G \
+          --numjobs=4 \
+          --runtime=600 \
+          --time_based \
+          --iodepth=32 \
+          --direct=1 \
+          --ioengine=libaio \
+          --group_reporting
     volumeMounts:
     - mountPath: /data
       name: fio-volume
