@@ -249,19 +249,23 @@ run_profile_deployment() {
     
     # User input for profile selection
     echo "Select FIO profile:"
-    echo "1) 80/20 Read/Write"
+    echo "1) 99/1 Read/Write"
     echo "2) 90/10 Read/Write"
     echo "3) 70/30 Read/Write"
-    echo "4) 10/90 Read/Write"
-    echo "5) 1/99 Read/Write"
-    read -p "Enter choice [1-5]: " profile_choice
+    echo "4) 50/50 Read/Write"
+    echo "5) 30/70 Read/Write"
+    echo "6) 10/90 Read/Write"
+    echo "7) 1/99 Read/Write"
+    read -p "Enter choice [1-7]: " profile_choice
     
     case $profile_choice in
-        1) export PROFILE="8020"; export RWMIX=80;;
+        1) export PROFILE="991"; export RWMIX=99;;
         2) export PROFILE="9010"; export RWMIX=90;;
         3) export PROFILE="7030"; export RWMIX=70;;
-        4) export PROFILE="1090"; export RWMIX=10;;
-        5) export PROFILE="199";  export RWMIX=1;;
+        4) export PROFILE="5050"; export RWMIX=50;;
+        5) export PROFILE="3070"; export RWMIX=30;;
+        6) export PROFILE="1090"; export RWMIX=10;;
+        7) export PROFILE="199";  export RWMIX=1;;
         *) echo -e "${RED}Invalid choice${NC}"; exit 1;;
     esac
     
