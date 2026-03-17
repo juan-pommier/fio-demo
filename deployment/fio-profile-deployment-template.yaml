@@ -39,7 +39,6 @@ spec:
           volumeMounts:
             - name: fio-pvc
               mountPath: /data
-      restartPolicy: OnFailure
       volumes:
         - name: fio-pvc
           persistentVolumeClaim:
