@@ -27,12 +27,12 @@ spec:
                 --filename=/data/testfile \
                 --rw=randrw \
                 --rwmixread=${RWMIX} \
-                --bs=4k \
-                --size=8G \
-                --numjobs=4 \
+                --bs=8k \
+                --size=1G \
+                --numjobs=1 \
                 --runtime=600 \
                 --time_based \
-                --iodepth=32 \
+                --iodepth=8 \
                 --direct=1 \
                 --ioengine=libaio \
                 --group_reporting
