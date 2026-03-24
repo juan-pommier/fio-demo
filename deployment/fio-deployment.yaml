@@ -25,9 +25,9 @@ spec:
           --filename=/data/testfile \
           --rw=randrw \
           --rwmixread=80 \
-          --bs=4k \
+          --bs=8k \
           --size=8G \
-          --numjobs=4 \
+          --numjobs=1 \
           --runtime=600 \
           --time_based \
           --iodepth=32 \
