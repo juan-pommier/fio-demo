@@ -106,7 +106,7 @@ watch_resource() {
         # Check if resource is ready
         if [ "$resource_type" = "pvc" ]; then
             # For PVC, check if status is Bound
- local status=$(kubectl get pvc $resource_name -n "$FIO_NAMESPACE" -o jsonpath='{.status.phase}')                echo -e "${GREEN}✓ PVC is Bound!${NC}"
+ local status=$(kubectl get pvc $resource_name -n "$FIO_NAMESPACE" -o jsonpath='{.status.phase}')                echo_info "${GREEN}✓ PVC is Bound!${NC}"
   if [ "$status" = "Bound" ]; then
                 sleep 2
                 break
@@ -115,7 +115,7 @@ watch_resource() {
             # For Pod, check if all containers are ready
  local ready=$(kubectl get pod $resource_name -n "$FIO_NAMESPACE" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' )            
  if [ "$ready" = "True" ]; then
-                echo -e "${GREEN}✓ Pod is Ready!${NC}"
+                echo_info "${GREEN}✓ Pod is Ready!${NC}"
                 sleep 2
                 break
             fi
@@ -219,7 +219,7 @@ run_demo() {
 
     # Run snapshot commands if flag is set
     if [ "$RUN_SNAPSHOT" = true ]; then
-        echo -e "${CYAN}━━━ Running Snapshot Commands ━━━${NC}"
+        echo_header "${CYAN}━━━ Running Snapshot Commands ━━━${NC}"
         create_snapshot || { echo_warning "Failed to create snapshot"; return 1; }
         check_snapshot_status
     fi
@@ -227,12 +227,12 @@ run_demo() {
     # Run clone commands if flag is set (includes snapshot)
     if [ "$RUN_CLONE" = true ]; then
         if [ "$RUN_SNAPSHOT" != true ]; then
-            echo -e "${CYAN}━━━ Running Snapshot Commands (required for clone) ━━━${NC}"
+            echo_header "${CYAN}━━━ Running Snapshot Commands (required for clone) ━━━${NC}"
             create_snapshot || { echo_warning "Failed to create snapshot"; return 1; }
             check_snapshot_status
         fi
 
-        echo -e "${CYAN}━━━ Running Clone Commands ━━━${NC}"
+        echo_header "${CYAN}━━━ Running Clone Commands ━━━${NC}"
         deploy_clone_pod || { echo_warning "Failed to deploy clone pod"; return 1; }
         wait_clone_pod
         check_clone_status
@@ -244,7 +244,7 @@ run_demo() {
 
 # Function to run profile-based deployment
 run_profile_deployment() {
-    echo -e "${CYAN}━━━ FIO Profile-Based Multi-Instance Deployment ━━━${NC}"
+    echo_header "${CYAN}━━━ FIO Profile-Based Multi-Instance Deployment ━━━${NC}"
     echo
     
     # User input for profile selection
